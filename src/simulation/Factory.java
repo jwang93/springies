@@ -52,9 +52,21 @@ public class Factory {
         int id = line.nextInt();
         double x = line.nextDouble();
         double y = line.nextDouble();
+        
         double mass = line.nextDouble();
-        Mass result = new Mass(x, y, mass);
-        myMasses.put(id,  result);
+        
+        Mass result = null;
+        
+        if (mass < 0.0) {
+        	result = new FixedMass(x, y, mass);
+        	System.out.println("Added a fixed mass");
+            myMasses.put(id,  result);
+        }
+        
+        else {
+        	result = new Mass(x, y, mass);
+            myMasses.put(id,  result);
+        }
         return result;
     }
 
@@ -66,4 +78,5 @@ public class Factory {
         double ks = line.nextDouble();
         return new Spring(m1, m2, restLength, ks);
     }
+    
 }
