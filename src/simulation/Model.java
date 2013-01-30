@@ -18,6 +18,7 @@ public class Model {
     // simulation state
     private List<Mass> myMasses;
     private List<Spring> mySprings;
+    private List<Muscle> myMuscles;
 
     /**
      * Create a game of the given size with the given display for its shapes.
@@ -26,6 +27,7 @@ public class Model {
         myView = canvas;
         myMasses = new ArrayList<Mass>();
         mySprings = new ArrayList<Spring>();
+        myMuscles = new ArrayList<Muscle>();
     }
 
     /**
@@ -37,6 +39,9 @@ public class Model {
         }
         for (Mass m : myMasses) {
             m.paint(pen);
+        }
+        for (Muscle mu : myMuscles) {
+        	mu.paint(pen);
         }
     }
 
@@ -50,6 +55,9 @@ public class Model {
         }
         for (Mass m : myMasses) {
             m.update(elapsedTime, bounds);
+        }
+        for (Muscle mu : myMuscles) {
+        	mu.update(elapsedTime, bounds);
         }
     }
 
@@ -65,5 +73,12 @@ public class Model {
      */
     public void add (Spring spring) {
         mySprings.add(spring);
+    }
+    
+    /**
+     * Add given muscle to this simulation.
+     */
+    public void add (Muscle muscle) {
+        myMuscles.add(muscle);
     }
 }
