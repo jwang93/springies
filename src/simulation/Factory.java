@@ -16,7 +16,8 @@ public class Factory {
     // data file keywords
     private static final String MASS_KEYWORD = "mass";
     private static final String SPRING_KEYWORD = "spring";
-    private static final String MUSCLE_KEYWORD = "muscle";
+    private static final String GRAVITY_KEYWORD = "gravity";
+
 
     // mass IDs
     Map<Integer, Mass> myMasses = new HashMap<Integer, Mass>();
@@ -33,14 +34,14 @@ public class Factory {
                 if (line.hasNext()) {
                     String type = line.next();
                     if (MASS_KEYWORD.equals(type)) {
-                        model.add(massCommand(line));
+                        model.add(massCommand(line, model));
                     }
                     else if (SPRING_KEYWORD.equals(type)) {
                         model.add(springCommand(line));
-                    }
-                    else if (MUSCLE_KEYWORD.equals(type)) {
-                    	model.add(muscleCommand(line));
-                    }
+                    } 
+                    else if (GRAVITY_KEYWORD.equals(type)) {
+                        model.add(gravityCommand(line));
+                    } 
                 }
             }
             input.close();
@@ -52,7 +53,7 @@ public class Factory {
     }
 
     // create mass from formatted data
-    private Mass massCommand (Scanner line) {
+    private Mass massCommand (Scanner line, Model model) {
         int id = line.nextInt();
         double x = line.nextDouble();
         double y = line.nextDouble();
@@ -62,13 +63,13 @@ public class Factory {
         Mass result = null;
         
         if (mass < 0.0) {
-        	result = new FixedMass(x, y, mass);
+        	result = new FixedMass(x, y, mass, model);
         	System.out.println("Added a fixed mass");
             myMasses.put(id,  result);
         }
         
         else {
-        	result = new Mass(x, y, mass);
+        	result = new Mass(x, y, mass, model);
             myMasses.put(id,  result);
         }
         return result;
@@ -83,14 +84,11 @@ public class Factory {
         return new Spring(m1, m2, restLength, ks);
     }
     
-    // create muscle from formatted data
-    private Muscle muscleCommand (Scanner line) {
-        Mass m1 = myMasses.get(line.nextInt());
-        Mass m2 = myMasses.get(line.nextInt());
-        double restLength = line.nextDouble();
-        double ks = line.nextDouble();
-        double amp = line.nextDouble();
-        return new Muscle(m1, m2, restLength, ks, amp);
+    
+    private Gravity gravityCommand (Scanner line) {
+        double myDirection = line.nextDouble();
+        double myMagnitude = line.nextDouble();
+        return new Gravity(myDirection, myMagnitude);
     }
     
 }
