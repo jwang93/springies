@@ -48,11 +48,11 @@ public class Mass extends Sprite {
     /**
      * XXX.
      */
-    @Override
-    public void paint (Graphics2D pen) {
-        pen.setColor(Color.BLACK);
-        pen.fillOval((int)getLeft(), (int)getTop(), (int)getWidth(), (int)getHeight());
-    }
+//    @Override
+//    public void paint (Graphics2D pen) {
+//        pen.setColor(Color.BLACK);
+//        pen.fillOval((int)getLeft(), (int)getTop(), (int)getWidth(), (int)getHeight());
+//    }
 
     /**
      * Use the given force to change this mass's acceleration.
