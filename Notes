@@ -1,0 +1,42 @@
+Notes
+
+To make a Fixed Mass, it should extend Mass 
+	it should not have any forces have any effect on it 
+
+	
+Questions:
+	What is the myMass field used for in Mass.java? 
+		I think that's the weight of the thing and affects how fast it moves 
+		
+
+for fixed mass: "This element does not move, regardless of what forces are applied to them."
+	but do other mass elements move as if the fixed mass moved normally? 
+	
+	
+Springs: "spring followed by the id of its two masses, a rest length, and a K springy-ness constant."
+	springs take 4 parameters (2 masses, rest length, and k const)
+	
+Muscles: (these are going to be spring derivatives)
+	this spring is indicated by the keyword muscle followed by the id of its two masses, a rest length, a K springy-ness constant, and an amplitude.
+	take 5 parameters: 2 mases, rest length, k const, and amplitude 
+	
+	i believe amplitude is the max "stretch" of the spring (the rest length) 
+	
+	
+
+Here's the design strategy for Forces 
+
+you have an environment.xsp which will control all of the forces 
+
+only mass objects can be affected by forces 
+	each mass object should have it's own force calculation 
+	
+	for example, Mass.java should have a myGravity, myViscosity fields 
+		then, in the update for Mass, you should apply all the forces 
+			maybe a fot loop where you iterate through all the forces that will act on mass 
+			
+			
+
+2/2 Work:
+	isolate COM and get that working 
+			
