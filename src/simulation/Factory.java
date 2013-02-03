@@ -32,7 +32,10 @@ public class Factory {
                     }
                     else if (Keywords.SPRING_KEYWORD.equals(type)) {
                         model.add(springCommand(line));
-                    } 
+                    }
+                    else if (Keywords.MUSCLE_KEYWORD.equals(type)) {
+                    	model.add(muscleCommand(line));
+                    }
 
                 }
             }
@@ -56,7 +59,6 @@ public class Factory {
         
         if (mass < 0.0) {
         	result = new FixedMass(x, y, mass, model);
-        	System.out.println("Added a fixed mass");
             myMasses.put(id,  result);
         }
         
@@ -74,6 +76,16 @@ public class Factory {
         double restLength = line.nextDouble();
         double ks = line.nextDouble();
         return new Spring(m1, m2, restLength, ks);
+    }
+    
+    // create muscle from formatted data
+    private Muscle muscleCommand (Scanner line) {
+        Mass m1 = myMasses.get(line.nextInt());
+        Mass m2 = myMasses.get(line.nextInt());
+        double restLength = line.nextDouble();
+        double ks = line.nextDouble();
+        double amp = line.nextDouble();
+        return new Muscle(m1, m2, restLength, ks, amp);
     }
     
 }

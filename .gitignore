@@ -3,6 +3,5 @@ bin/*
 images/*
 sounds/*
 *.class
-*.xsp
 *.wav
 *.gif
