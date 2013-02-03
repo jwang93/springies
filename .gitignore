@@ -1,5 +1,8 @@
 # files to ignore
-bin/
-images/
-sounds/
+bin/*
+images/*
+sounds/*
 *.class
+*.xsp
+*.wav
+*.gif
