@@ -19,6 +19,8 @@ import java.util.TreeSet;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.Timer;
+
+import simulation.Environment;
 import simulation.Factory;
 import simulation.Model;
 
@@ -52,6 +54,7 @@ public class Canvas extends JComponent {
     private Timer myTimer;
     // game to be animated
     private Model mySimulation;
+    private Environment myEnvironment;
     // input state
     private int myLastKeyPressed;
     private Point myLastMousePosition;
@@ -123,7 +126,8 @@ public class Canvas extends JComponent {
                 }
             });
         // start animation
-        mySimulation = new Model(this);
+        myEnvironment = new Environment();
+        mySimulation = new Model(this, myEnvironment);
         loadModel();
         myTimer.start();
     }
@@ -191,4 +195,5 @@ public class Canvas extends JComponent {
             factory.loadModel(mySimulation, INPUT_CHOOSER.getSelectedFile());
         }
     }
+    
 }

@@ -20,35 +20,24 @@ import util.Vector;
 public class Mass extends Sprite {
 	// reasonable default values
 	public static final Dimension DEFAULT_SIZE = new Dimension(16, 16);
-	public static final Pixmap DEFUALT_IMAGE = new Pixmap("mass.gif");
+	public static final Pixmap DEFAULT_IMAGE = new Pixmap("mass.gif");
 
 	private double myMass;
 	private Vector myAcceleration;
 	
-	private CenterOfMass myCenterOfMass;
-	private Viscosity myViscosity;
 	private Model model;
+	private Environment environment;
 
 	/**
 	 * XXX.
 	 */
 	public Mass(double x, double y, double mass, Model model) {
-		super(DEFUALT_IMAGE, new Location(x, y), DEFAULT_SIZE);
+		super(DEFAULT_IMAGE, new Location(x, y), DEFAULT_SIZE);
 		myMass = mass;
 		myAcceleration = new Vector();
 		this.model = model;
-		myViscosity = new Viscosity(0.4);		
-		myCenterOfMass = new CenterOfMass(1.0, 1.0);
+		this.environment = model.getEnvironment();
 	}
-
-    /**
-     * XXX.
-     */
-    public Mass (double x, double y, double mass) {
-        super(DEFUALT_IMAGE, new Location(x, y), DEFAULT_SIZE);
-        myMass = mass;
-        myAcceleration = new Vector();
-    }
 
     /**
      * XXX.
@@ -92,12 +81,7 @@ public class Mass extends Sprite {
 	@Override
 	public void update(double elapsedTime, Dimension bounds) {
 		applyForce(getBounce(bounds));
-
-		// GRAVITY FORCE --
-		applyForce(getGravity());
-
-		// VISCOSITY FORCE --
-		applyForce(getViscosity());
+		applyEnvironment(environment);
 
 		// CENTER OF MASS
 		/*
@@ -124,6 +108,79 @@ public class Mass extends Sprite {
 	}
 	
 	/**
+	 * Applies environment forces.
+	 */
+	public void applyEnvironment(Environment env) {
+		Vector gravity = getGravityVector(env);
+		Vector centerMass = getCenterOfMassVector(env);
+		Vector viscosity = getViscosityVector(env);
+		applyForce(gravity);
+		applyForce(centerMass);
+		applyForce(viscosity);
+	}
+	
+	/**
+	 * Returns the viscosity force on this mass.
+	 */
+	private Vector getViscosityVector(Environment env) {
+		Force viscosityForce = env.getForce(Keywords.VISCOSITY_KEYWORD);
+		if (viscosityForce == null) {
+			return new Vector();
+		}
+		Vector viscosity = new Vector(getVelocity());
+		double viscosityScale = viscosityForce.getProperty("scale");
+		viscosity.setMagnitude(viscosity.getMagnitude() * viscosityScale);
+		viscosity.turn(180);
+		return viscosity;
+	}
+	
+	/**
+	 * Returns the gravity force on this mass.
+	 */
+	private Vector getGravityVector(Environment env) {
+		Vector gravity = env.getVector(Keywords.GRAVITY_KEYWORD);
+		if (gravity == null) {
+			return new Vector();
+		}
+		gravity = new Vector(gravity);
+		gravity.setMagnitude(myMass * gravity.getMagnitude());
+		return gravity;
+	}
+	
+	/**
+	 * Returns the center of mass force on this mass.
+	 */
+	private Vector getCenterOfMassVector(Environment env) {
+		Vector centerMassVector = env.getVector(Keywords.CENTER_OF_MASS_KEYWORD);
+		Force centerMassForce = env.getForce(Keywords.CENTER_OF_MASS_KEYWORD);
+		if (centerMassVector == null) {
+			return new Vector();
+		}
+		centerMassVector = new Vector(centerMassVector);
+		List<Mass> massList = model.getMasses();
+		for (Mass mass : massList) {
+			if (mass.equals(this)) {
+				continue;
+			}
+			double otherX = mass.getX();
+			double otherY = mass.getY();
+			Location myCenter = new Location(getX(), getY());
+			Location otherCenter = new Location(otherX, otherY);
+			double distance = distanceBetween(myCenter, otherCenter);
+			if (distance == 0) {
+				continue;
+			}
+			Vector currentCenterForce = new Vector();
+			currentCenterForce.setMagnitude(centerMassForce.getProperty("magnitude") * Math.pow(
+					(1.0 / distance), centerMassForce.getProperty("exponent")));
+			double angle = angleBetween(myCenter, otherCenter);
+			currentCenterForce.setAngle(angle);
+			centerMassVector.sum(currentCenterForce);
+		}
+		return centerMassVector;
+	}
+	
+	/**
 	 * Convenience method.
 	 */
 	public double distance(Mass other) {
@@ -131,71 +188,9 @@ public class Mass extends Sprite {
 		return new Location(getX(), getY()).distance(new Location(other.getX(),
 				other.getY()));
 	}
-
-	private Gravity getGravity() {
-		Gravity newGravity = model.retGravity();
-		newGravity.setMagnitude(newGravity.getMagnitude() * this.myMass);
-		return newGravity;
-	}
-
-	/**
-	 * Needs to return the Viscosity vector This vector is basically: sum of all
-	 * forces on the mass object * (-viscosity.getScale())
-	 * 
-	 * @return Vector that represents the Viscosity vector
-	 */
-	private Vector getViscosity() {
-		Vector retViscosity = new Vector();
-		retViscosity.setMagnitude(myAcceleration.getMagnitude() * myViscosity.getScale());
-		retViscosity.setAngle(myAcceleration.getAngle());
-		retViscosity.turn(180);
-		return retViscosity;
-	}
-
-	public void applyCenterOfMass(List<Mass> myMasses) {
-		// TODO Auto-generated method stub
-
-		/*
-		 * Ultimately, you are trying to create a new (Vector) Force that will
-		 * be applied to each mass in myMasses EXCEPT myself
-		 * 
-		 * Need: 2 Points (both centers of mass), Distance between points
-		 * FORMULA for Magnitude:
-		 * myCenterMassMagnitude*(1/distance)^centerExponentValue FORMULA for
-		 * Angle: get from the Vector class - getAngle() , takes 2 points as
-		 * parameters
-		 */
-		double distance;
-		Vector COM_force = new Vector();
-		double myX = this.getX();
-		double myY = this.getY();
-		double otherX;
-		double otherY;
-		double magnitude;
-		double angle;
-		Point myCenter = new Point((int) myX, (int) myY);
-		Point otherCenter = new Point(0, 0); // initially set to default
-												// location of 0, 0
-
-		for (Mass m : myMasses) {
-			if (!this.equals(m)) {
-				otherX = m.getX();
-				otherY = m.getY();
-				otherCenter.setLocation(otherX, otherY);
-				distance = distanceBetween(myCenter, otherCenter);
-				if (distance == 0) magnitude = 0.0;
-				else {
-					magnitude = (myCenterOfMass.getCOM_Mag() * Math.pow(
-							(1.0 / distance), myCenterOfMass.getCOM_ExpVal()));
-				}
-				angle = angleBetween(myCenter, otherCenter);
-				COM_force.setMagnitude(magnitude);
-				COM_force.setAngle(angle);
-				System.out.println("Mass is: " + m + " and the force: angle - " + COM_force.getAngle() + " mag - " + COM_force.getMagnitude());
-				System.out.println("Distance is: " + distance);
-				m.applyForce(COM_force);
-			}
-		}
+	
+	public double getMass() {
+		return myMass;
 	}
 
 	private static double distanceBetween(Point2D p1, Point2D p2) {

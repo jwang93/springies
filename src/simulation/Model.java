@@ -17,17 +17,17 @@ import view.Canvas;
 public class Model {
     // bounds and input for game
     private Canvas myView;
+    private Environment myEnvironment;
     // simulation state
     private List<Mass> myMasses;
-    private List<Spring> mySprings;
-    private Gravity envGravity = new Gravity(0, 0);     //need to fix this public 
-    private Viscosity envViscosity = new Viscosity(0);    // 0 means no viscosity 
+    private List<Spring> mySprings; 
 
     /**
      * Create a game of the given size with the given display for its shapes.
      */
-    public Model (Canvas canvas) {
+    public Model (Canvas canvas, Environment env) {
         myView = canvas;
+        myEnvironment = env;
         myMasses = new ArrayList<Mass>();
         mySprings = new ArrayList<Spring>();
     }
@@ -54,7 +54,6 @@ public class Model {
         }
         for (Mass m : myMasses) {
             m.update(elapsedTime, bounds);
-            m.applyCenterOfMass(myMasses);
         }
     }
 
@@ -72,22 +71,18 @@ public class Model {
         mySprings.add(spring);
     }
     
-    public void add (Gravity force) {
-    	System.out.println("Gravity with magnitude of: " + force.getMagnitude() + " has been added.");
-    	envGravity = force;
+    /**
+     * Returns list of all masses in model.
+     */
+    public List<Mass> getMasses() {
+    	return myMasses;
     }
     
-    public void add (Viscosity visc) {
-    	System.out.println("Viscosity of: " + visc.getScale() + " has been added.");
-    	envViscosity = visc;
-    }
-    
-    public Gravity retGravity() {
-    	return envGravity;
-    }
-    
-    public Viscosity retViscosity() {
-    	return envViscosity;
+    /**
+     * Returns the environment.
+     */
+    public Environment getEnvironment() {
+    	return myEnvironment;
     }
     
 }

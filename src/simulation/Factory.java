@@ -13,15 +13,9 @@ import java.util.Scanner;
  * @author Robert C. Duvall
  */
 public class Factory {
-    // data file keywords
-    private static final String MASS_KEYWORD = "mass";
-    private static final String SPRING_KEYWORD = "spring";
-    private static final String GRAVITY_KEYWORD = "gravity";
-
 
     // mass IDs
     Map<Integer, Mass> myMasses = new HashMap<Integer, Mass>();
-
 
     /**
      * XXX.
@@ -33,15 +27,13 @@ public class Factory {
                 Scanner line = new Scanner(input.nextLine());
                 if (line.hasNext()) {
                     String type = line.next();
-                    if (MASS_KEYWORD.equals(type)) {
+                    if (Keywords.MASS_KEYWORD.equals(type)) {
                         model.add(massCommand(line, model));
                     }
-                    else if (SPRING_KEYWORD.equals(type)) {
+                    else if (Keywords.SPRING_KEYWORD.equals(type)) {
                         model.add(springCommand(line));
                     } 
-                    else if (GRAVITY_KEYWORD.equals(type)) {
-                        model.add(gravityCommand(line));
-                    } 
+
                 }
             }
             input.close();
@@ -49,7 +41,7 @@ public class Factory {
         catch (FileNotFoundException e) {
             // should not happen because File came from user selection
             e.printStackTrace();
-        }
+        }        
     }
 
     // create mass from formatted data
@@ -82,13 +74,6 @@ public class Factory {
         double restLength = line.nextDouble();
         double ks = line.nextDouble();
         return new Spring(m1, m2, restLength, ks);
-    }
-    
-    
-    private Gravity gravityCommand (Scanner line) {
-        double myDirection = line.nextDouble();
-        double myMagnitude = line.nextDouble();
-        return new Gravity(myDirection, myMagnitude);
     }
     
 }

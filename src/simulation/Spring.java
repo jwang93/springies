@@ -16,7 +16,7 @@ import util.Vector;
  */
 public class Spring extends Sprite {
     // reasonable default values
-    public static final Pixmap DEFUALT_IMAGE = new Pixmap("spring.gif");
+    public static final Pixmap DEFAULT_IMAGE = new Pixmap("spring.gif");
     public static final int IMAGE_HEIGHT = 20;
 
     private Mass myStart;
@@ -28,7 +28,7 @@ public class Spring extends Sprite {
      * XXX.
      */
     public Spring (Mass start, Mass end, double length, double kVal) {
-        super(DEFUALT_IMAGE, getCenter(start, end), getSize(start, end));
+        super(DEFAULT_IMAGE, getCenter(start, end), getSize(start, end));
         myStart = start;
         myEnd = end;
         myLength = length;
@@ -38,11 +38,11 @@ public class Spring extends Sprite {
     /**
      * XXX.
      */
-//    @Override
-//    public void paint (Graphics2D pen) {
-//        pen.setColor(getColor(myStart.distance(myEnd) - myLength));
-//        pen.drawLine((int)myStart.getX(), (int)myStart.getY(), (int)myEnd.getX(), (int)myEnd.getY());
-//    }
+    @Override
+    public void paint (Graphics2D pen) {
+        pen.setColor(getColor(myStart.distance(myEnd) - myLength));
+        pen.drawLine((int)myStart.getX(), (int)myStart.getY(), (int)myEnd.getX(), (int)myEnd.getY());
+    }
 
     /**
      * XXX.
@@ -61,6 +61,13 @@ public class Spring extends Sprite {
         setCenter(getCenter(myStart, myEnd));
         setSize(getSize(myStart, myEnd));
         setVelocity(Vector.angleBetween(dx, dy), 0);
+    }
+    
+    /**
+     * Sets the rest length of the spring. 
+     */
+    public void setLength(double length) {
+    	myLength = length;
     }
 
     /**
