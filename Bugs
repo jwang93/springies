@@ -1,0 +1,6 @@
+Bugs List:
+
+1. When a fixed mass is in play, the gravity behaves correctly. When fixed mass is gone, the gravity goes
+in the opposite direction. 
+
+2. 

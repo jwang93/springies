@@ -3,25 +3,43 @@ package simulation;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.geom.Point2D;
+import java.util.List;
+
 import util.Location;
 import util.Pixmap;
 import util.Sprite;
 import util.Vector;
-
 
 /**
  * XXX.
  * 
  * @author Robert C. Duvall
  */
-public class Mass extends Sprite {    
-    // reasonable default values
-    public static final Dimension DEFAULT_SIZE = new Dimension(16, 16);
-    public static final Pixmap DEFUALT_IMAGE = new Pixmap("mass.gif");
+public class Mass extends Sprite {
+	// reasonable default values
+	public static final Dimension DEFAULT_SIZE = new Dimension(16, 16);
+	public static final Pixmap DEFUALT_IMAGE = new Pixmap("mass.gif");
 
-    private double myMass;
-    private Vector myAcceleration;
+	private double myMass;
+	private Vector myAcceleration;
+	
+	private CenterOfMass myCenterOfMass;
+	private Viscosity myViscosity;
+	private Model model;
 
+	/**
+	 * XXX.
+	 */
+	public Mass(double x, double y, double mass, Model model) {
+		super(DEFUALT_IMAGE, new Location(x, y), DEFAULT_SIZE);
+		myMass = mass;
+		myAcceleration = new Vector();
+		this.model = model;
+		myViscosity = new Viscosity(0.4);		
+		myCenterOfMass = new CenterOfMass(1.0, 1.0);
+	}
 
     /**
      * XXX.
@@ -30,19 +48,6 @@ public class Mass extends Sprite {
         super(DEFUALT_IMAGE, new Location(x, y), DEFAULT_SIZE);
         myMass = mass;
         myAcceleration = new Vector();
-    }
-
-    /**
-     * XXX.
-     */
-    @Override
-    public void update (double elapsedTime, Dimension bounds) {
-        applyForce(getBounce(bounds));
-        // convert force back into Mover's velocity
-        getVelocity().sum(myAcceleration);
-        myAcceleration.reset();
-        // move mass by velocity
-        super.update(elapsedTime, bounds);
     }
 
     /**
@@ -60,15 +65,6 @@ public class Mass extends Sprite {
     public void applyForce (Vector force) {
         myAcceleration.sum(force);
     }
-
-    /**
-     * Convenience method.
-     */
-    public double distance (Mass other) {
-        // this is a little awkward, so hide it
-        return new Location(getX(), getY()).distance(new Location(other.getX(), other.getY()));
-    }
-
 
     // check for move out of bounds
     private Vector getBounce (Dimension bounds) {
@@ -89,4 +85,133 @@ public class Mass extends Sprite {
         impulse.scale(getVelocity().getRelativeMagnitude(impulse));
         return impulse;
     }
+
+	/**
+	 * XXX.
+	 */
+	@Override
+	public void update(double elapsedTime, Dimension bounds) {
+		applyForce(getBounce(bounds));
+
+		// GRAVITY FORCE --
+		applyForce(getGravity());
+
+		// VISCOSITY FORCE --
+		applyForce(getViscosity());
+
+		// CENTER OF MASS
+		/*
+		 * This mass' force doesn't get affected by Center of Mass Rather, it
+		 * applies a force on all the other Center of Masses. This is done
+		 * through the method applyCenterOfMass() which is called in Model.
+		 */
+
+		// convert force back into Mover's velocity
+		getVelocity().sum(myAcceleration);
+		myAcceleration.reset();
+		// move mass by velocity
+		super.update(elapsedTime, bounds);
+	}
+
+	/**
+	 * XXX.
+	 */
+	@Override
+	public void paint(Graphics2D pen) {
+		pen.setColor(Color.BLACK);
+		pen.fillOval((int) getLeft(), (int) getTop(), (int) getWidth(),
+				(int) getHeight());
+	}
+	
+	/**
+	 * Convenience method.
+	 */
+	public double distance(Mass other) {
+		// this is a little awkward, so hide it
+		return new Location(getX(), getY()).distance(new Location(other.getX(),
+				other.getY()));
+	}
+
+	private Gravity getGravity() {
+		Gravity newGravity = model.retGravity();
+		newGravity.setMagnitude(newGravity.getMagnitude() * this.myMass);
+		return newGravity;
+	}
+
+	/**
+	 * Needs to return the Viscosity vector This vector is basically: sum of all
+	 * forces on the mass object * (-viscosity.getScale())
+	 * 
+	 * @return Vector that represents the Viscosity vector
+	 */
+	private Vector getViscosity() {
+		Vector retViscosity = new Vector();
+		retViscosity.setMagnitude(myAcceleration.getMagnitude() * myViscosity.getScale());
+		retViscosity.setAngle(myAcceleration.getAngle());
+		retViscosity.turn(180);
+		return retViscosity;
+	}
+
+	public void applyCenterOfMass(List<Mass> myMasses) {
+		// TODO Auto-generated method stub
+
+		/*
+		 * Ultimately, you are trying to create a new (Vector) Force that will
+		 * be applied to each mass in myMasses EXCEPT myself
+		 * 
+		 * Need: 2 Points (both centers of mass), Distance between points
+		 * FORMULA for Magnitude:
+		 * myCenterMassMagnitude*(1/distance)^centerExponentValue FORMULA for
+		 * Angle: get from the Vector class - getAngle() , takes 2 points as
+		 * parameters
+		 */
+		double distance;
+		Vector COM_force = new Vector();
+		double myX = this.getX();
+		double myY = this.getY();
+		double otherX;
+		double otherY;
+		double magnitude;
+		double angle;
+		Point myCenter = new Point((int) myX, (int) myY);
+		Point otherCenter = new Point(0, 0); // initially set to default
+												// location of 0, 0
+
+		for (Mass m : myMasses) {
+			if (!this.equals(m)) {
+				otherX = m.getX();
+				otherY = m.getY();
+				otherCenter.setLocation(otherX, otherY);
+				distance = distanceBetween(myCenter, otherCenter);
+				if (distance == 0) magnitude = 0.0;
+				else {
+					magnitude = (myCenterOfMass.getCOM_Mag() * Math.pow(
+							(1.0 / distance), myCenterOfMass.getCOM_ExpVal()));
+				}
+				angle = angleBetween(myCenter, otherCenter);
+				COM_force.setMagnitude(magnitude);
+				COM_force.setAngle(angle);
+				System.out.println("Mass is: " + m + " and the force: angle - " + COM_force.getAngle() + " mag - " + COM_force.getMagnitude());
+				System.out.println("Distance is: " + distance);
+				m.applyForce(COM_force);
+			}
+		}
+	}
+
+	private static double distanceBetween(Point2D p1, Point2D p2) {
+		return distanceBetween(p1.getX() - p2.getX(), p1.getY() - p2.getY());
+	}
+
+	private static double distanceBetween(double dx, double dy) {
+		return Math.sqrt(dx * dx + dy * dy);
+	}
+
+	private static double angleBetween(Point2D p1, Point2D p2) {
+		return angleBetween(p1.getX() - p2.getX(), p1.getY() - p2.getY());
+	}
+
+	private static double angleBetween(double dx, double dy) {
+		return Math.toDegrees(Math.atan2(dy, dx));
+	}
+
 }

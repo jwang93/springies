@@ -1,0 +1,15 @@
+Design Fixes
+
+
+1. In Mass.java - at the bottom of the class, there are four helper functions that come from the Vector class (angleBetween, angleBetween, distanceBetween, 
+distanceBetween) that should be removed. We should figure out how to just use the implementation from the Vector class. 
+
+2. If you look at the three forces: Gravity, Viscosity, CenterOfMass - Gravity is the only one that is implemented in Model.java. The other two have instance 
+variables in the Mass.java class - myCenterOfMass, myViscosity. We probably want to follow the Gravity model and have Viscosity and CenterOfMass somewhere
+in the model file. 
+
+3. Duvall mentioned that there is no purpose in creating a class where all you do is have get/set methods. That, unfortunately is all Viscosity, CenterOfMass, 
+and Gravity are... We need to think how we're going to handle that? Maybe add more logic into those classes? Right now, the only value I'm getting from having 
+them be different classes is in my Factory.java file, when I call the add() method, because it is an overloaded method, it knows which type of force it is 
+based on it's class type. (... don't know if that made sense) 
+

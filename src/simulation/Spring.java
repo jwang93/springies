@@ -16,7 +16,7 @@ import util.Vector;
  */
 public class Spring extends Sprite {
     // reasonable default values
-    public static final Pixmap DEFAULT_IMAGE = new Pixmap("spring.gif");
+    public static final Pixmap DEFUALT_IMAGE = new Pixmap("spring.gif");
     public static final int IMAGE_HEIGHT = 20;
 
     private Mass myStart;
@@ -28,7 +28,7 @@ public class Spring extends Sprite {
      * XXX.
      */
     public Spring (Mass start, Mass end, double length, double kVal) {
-        super(DEFAULT_IMAGE, getCenter(start, end), getSize(start, end));
+        super(DEFUALT_IMAGE, getCenter(start, end), getSize(start, end));
         myStart = start;
         myEnd = end;
         myLength = length;
@@ -81,13 +81,4 @@ public class Spring extends Sprite {
     private static Dimension getSize (Mass start, Mass end) {
         return new Dimension((int)start.distance(end), IMAGE_HEIGHT);
     }
-    
-    public void setLength(double length) {
-    	myLength = length;
-    }
-    
-    public double getLength() {
-    	return myLength;
-    }
-    
 }

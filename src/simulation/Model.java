@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.util.List;
 import java.util.ArrayList;
+
+import util.Vector;
 import view.Canvas;
 
 
@@ -18,7 +20,8 @@ public class Model {
     // simulation state
     private List<Mass> myMasses;
     private List<Spring> mySprings;
-    private List<Muscle> myMuscles;
+    private Gravity envGravity = new Gravity(0, 0);     //need to fix this public 
+    private Viscosity envViscosity = new Viscosity(0);    // 0 means no viscosity 
 
     /**
      * Create a game of the given size with the given display for its shapes.
@@ -27,7 +30,6 @@ public class Model {
         myView = canvas;
         myMasses = new ArrayList<Mass>();
         mySprings = new ArrayList<Spring>();
-        myMuscles = new ArrayList<Muscle>();
     }
 
     /**
@@ -39,9 +41,6 @@ public class Model {
         }
         for (Mass m : myMasses) {
             m.paint(pen);
-        }
-        for (Muscle mu : myMuscles) {
-        	mu.paint(pen);
         }
     }
 
@@ -55,9 +54,7 @@ public class Model {
         }
         for (Mass m : myMasses) {
             m.update(elapsedTime, bounds);
-        }
-        for (Muscle mu : myMuscles) {
-        	mu.update(elapsedTime, bounds);
+            m.applyCenterOfMass(myMasses);
         }
     }
 
@@ -75,10 +72,22 @@ public class Model {
         mySprings.add(spring);
     }
     
-    /**
-     * Add given muscle to this simulation.
-     */
-    public void add (Muscle muscle) {
-        myMuscles.add(muscle);
+    public void add (Gravity force) {
+    	System.out.println("Gravity with magnitude of: " + force.getMagnitude() + " has been added.");
+    	envGravity = force;
     }
+    
+    public void add (Viscosity visc) {
+    	System.out.println("Viscosity of: " + visc.getScale() + " has been added.");
+    	envViscosity = visc;
+    }
+    
+    public Gravity retGravity() {
+    	return envGravity;
+    }
+    
+    public Viscosity retViscosity() {
+    	return envViscosity;
+    }
+    
 }

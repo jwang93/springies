@@ -35,10 +35,12 @@ public class Vector {
     /**
      * Create a vector whose direction and magnitude are determined by
      * direction and distance between the two given points.
+     * 
+     * FIXED THE BUG MENTIONED IN PIAZZA - https://piazza.com/class#spring2013/compsci308001sp13/81
      */
     public Vector (Point2D source, Point2D target) {
-        double dx = target.getX() - source.getX();
-        double dy = source.getY() - target.getY();
+    	double dx = target.getX() - source.getX();
+    	double dy = target.getY() - source.getY();
         setDirection(angleBetween(dx, dy));
         setMagnitude(distanceBetween(dx, dy));
     }
@@ -63,6 +65,10 @@ public class Vector {
      */
     public double getMagnitude () {
         return myMagnitude;
+    }
+    
+    public double getAngle() {
+    	return myAngle;
     }
 
     /**
@@ -90,8 +96,16 @@ public class Vector {
     /**
      * Sets this vector's magnitude to the given value.
      */
-    protected void setMagnitude (double value) {
+    public void setMagnitude (double value) {
         myMagnitude = value;
+    }
+    
+    /**
+     * @author - Jay Wang 
+     * Wrote this function so I could set the angle of a vector
+     */
+    public void setAngle (double angle) {
+    	myAngle = angle;
     }
 
     /**
@@ -113,11 +127,14 @@ public class Vector {
 
     /**
      * Adjusts this vector's direction by the given change value.
+     * 
+     * FIXED BUG MENTIONED IN PIAZZA - https://piazza.com/class#spring2013/compsci308001sp13/72
      */
     public void turn (double change) {
-        setDirection(getDirection() + change);
+        setDirection((getDirection() + change) % 360);
     }
 
+    
     /**
      * Sets this vector's direction to the given value.
      */
@@ -231,11 +248,13 @@ public class Vector {
         return angleBetween(p1.getX() - p2.getX(), p1.getY() - p2.getY());
     }
 
+    
     /**
      * Returns the angle represented by the given dx and dy
+     * 
+     * FIXED BUG MENTIONED IN PIAZZA - https://piazza.com/class#spring2013/compsci308001sp13/72
      */
     public static double angleBetween (double dx, double dy) {
-        // TODO: this is still buggy :(
         return Math.toDegrees(Math.atan2(dy, dx));
     }
 
