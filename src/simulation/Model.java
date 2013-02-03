@@ -25,9 +25,9 @@ public class Model {
     /**
      * Create a game of the given size with the given display for its shapes.
      */
-    public Model (Canvas canvas, Environment env) {
+    public Model (Canvas canvas) {
         myView = canvas;
-        myEnvironment = env;
+        myEnvironment = null;
         myMasses = new ArrayList<Mass>();
         mySprings = new ArrayList<Spring>();
     }
@@ -83,6 +83,13 @@ public class Model {
      */
     public Environment getEnvironment() {
     	return myEnvironment;
+    }
+    
+    /**
+     * Sets the environment.
+     */
+    public void setEnvironment(Environment env) {
+    	myEnvironment = env;
     }
     
 }

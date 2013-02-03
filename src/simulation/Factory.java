@@ -16,11 +16,12 @@ public class Factory {
 
     // mass IDs
     Map<Integer, Mass> myMasses = new HashMap<Integer, Mass>();
-
+    
     /**
      * XXX.
      */
     public void loadModel (Model model, File modelFile) {
+    	model.setEnvironment(loadEnvironment());
         try {
             Scanner input = new Scanner(modelFile);
             while (input.hasNext()) {
@@ -45,6 +46,11 @@ public class Factory {
             // should not happen because File came from user selection
             e.printStackTrace();
         }        
+    }
+    
+    // create the environment from formatted data
+    private Environment loadEnvironment() {
+        return new Environment();
     }
 
     // create mass from formatted data

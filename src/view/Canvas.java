@@ -54,7 +54,6 @@ public class Canvas extends JComponent {
     private Timer myTimer;
     // game to be animated
     private Model mySimulation;
-    private Environment myEnvironment;
     // input state
     private int myLastKeyPressed;
     private Point myLastMousePosition;
@@ -126,8 +125,7 @@ public class Canvas extends JComponent {
                 }
             });
         // start animation
-        myEnvironment = new Environment();
-        mySimulation = new Model(this, myEnvironment);
+        mySimulation = new Model(this);
         loadModel();
         myTimer.start();
     }

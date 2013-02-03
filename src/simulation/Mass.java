@@ -83,13 +83,6 @@ public class Mass extends Sprite {
 		applyForce(getBounce(bounds));
 		applyEnvironment(environment);
 
-		// CENTER OF MASS
-		/*
-		 * This mass' force doesn't get affected by Center of Mass Rather, it
-		 * applies a force on all the other Center of Masses. This is done
-		 * through the method applyCenterOfMass() which is called in Model.
-		 */
-
 		// convert force back into Mover's velocity
 		getVelocity().sum(myAcceleration);
 		myAcceleration.reset();
