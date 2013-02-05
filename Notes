@@ -39,4 +39,26 @@ only mass objects can be affected by forces
 
 2/2 Work:
 	isolate COM and get that working 
-			
+	
+	
+2/4 Work:
+	goal to get a design for Wall repulsion
+	
+	"In the data file, this force is indicated by the keyword wall followed by a wall ID (1 is the top, 2 is right, etc.), 
+	a magnitude, and an exponent value. An exponent value of 2.0 means inverse-square force (the force is inversely proportional 
+	to the distance squared). A value of 0.0 is a constant force independent of position"
+	
+	*Note - the algorithm for calculating the force is the same as the center of mass force calculation 
+	
+	Each wall force will be fed in individually: i.e. --> wall 1 3.4 2.0 
+	
+	What you can do is create another layer of indirection --> WallRepulsion -> ArrayList<Forces> 
+		Then you add the forces in there!? would that work..? 
+	
+
+	//methods added:
+		getForces ==> getWallForces
+		getVector ==> getWallVectors
+		addForce ==> addWallForces
+		addVector ==> addWallVectors 
+		

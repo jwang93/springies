@@ -13,6 +13,11 @@ public class Environment {
 	private static final HashMap<String,Force> myForces = new HashMap<String,Force>();
 	private static final HashMap<String,Vector> myVectors = new HashMap<String,Vector>();
 	
+	private static final List<Force> wallForces = new ArrayList<Force>();
+	private static final HashMap<String, List<Force>> wallForcesMap = new HashMap<String, List<Force>>();
+	private static final HashMap<String, List<Vector>> wallVectorsMap = new HashMap<String, List<Vector>>();
+	private static final List<Vector> wallVectors = new ArrayList<Vector>();
+	
 	private static final String DEFAULT_ENV_FILE = "src/data/environment.xsp";
 
 	public Environment() {
@@ -42,9 +47,12 @@ public class Environment {
     					addForce(Keywords.CENTER_OF_MASS_KEYWORD, centerMassCommand(line));
     					addVector(Keywords.CENTER_OF_MASS_KEYWORD);
     				}
-//    				else if (WALL_KEYWORD.equals(type)) {
-//    					add(wallCommand(line));
-//    				}
+    				// we can't title the Keyword.Wall_Keyword 
+    				// we could do a case switch statement here... 
+    				else if (Keywords.WALL_KEYWORD.equals(type)) {
+    					addWallForce(Keywords.WALL_KEYWORD, wallCommand(line));
+    					addWallVector(Keywords.WALL_KEYWORD);
+    				}
     			}
     		}
     		input.close();
@@ -89,14 +97,19 @@ public class Environment {
         return centerMass;
     }
     
-//    /**
-//     * Adds a wall force.
-//     */
-//    private Force wallCommand (Scanner line) {
-//        double myDirection = line.nextDouble();
-//        double myMagnitude = line.nextDouble();
-//        return new Gravity(myDirection, myMagnitude);
-//    }
+    /**
+     * Adds a wall force.
+     */
+    private Force wallCommand (Scanner line) {
+    	int myID = line.nextInt();
+        double myMagnitude = line.nextDouble();
+        double myExponent = line.nextDouble();
+        Force wallRepulsion = new Force(Keywords.WALL_KEYWORD);
+        wallRepulsion.addProperty("id", (double) myID);
+        wallRepulsion.addProperty("magnitude", myMagnitude);
+        wallRepulsion.addProperty("exponent", myExponent);
+        return wallRepulsion;
+    }
 	
     /**
      * Creates a vector from the force map and adds to the vector map.
@@ -121,11 +134,46 @@ public class Environment {
     	myVectors.put(forceName, vector);
     }
     
+    
+    /**
+     * Creates a vector from the force map and adds to the wall vector map.
+     */
+    private void addWallVector(String forceName) {
+    	if (!wallForcesMap.containsKey(forceName)) {
+    		System.err.printf("WARNING: %s does not exist in the force map", forceName);
+    		return;
+    	}
+    	Vector vector = new Vector();
+    	Force lastForce = wallForcesMap.get(forceName).get(wallForces.lastIndexOf(wallForces));
+    	
+    	if (lastForce.getProperty("magnitude") != null) {
+    		vector.setMagnitude(lastForce.getProperty("magnitude"));
+    	} else {
+    		vector.setMagnitude(0);
+    	}
+    	if (lastForce.getProperty("direction") != null) {
+    		vector.setAngle(lastForce.getProperty("direction"));
+    	} else {
+    		vector.setAngle(0);
+    	}
+    	
+    	wallVectors.add(vector);
+    	wallVectorsMap.put(forceName, wallVectors);
+    }
+    
     /**
      * Adds a force to the map, or updates it if it exists.
      */
     private void addForce(String name, Force force) {
     	myForces.put(name, force);
+    }
+    
+    /**
+     * Adds a wall force to the map, or updates it if it exists.
+     */
+    private void addWallForce(String name, Force force) {
+    	wallForces.add(force);
+    	wallForcesMap.put(name, wallForces);
     }
     
     /**
@@ -140,11 +188,34 @@ public class Environment {
     }
     
     /**
+     * Gets the wall vectors from the wall vector map.
+     */
+    public List<Vector> getWallVectors(String name) {
+    	if (wallVectorsMap.containsKey(name)) {
+    		return wallVectorsMap.get(name);
+    	} else {
+    		return null;
+    	}
+    }
+    
+    
+    /**
      * Gets a force from the force map.
      */
     public Force getForce(String name) {
     	if (myForces.containsKey(name)) {
     		return myForces.get(name);
+    	} else {
+    		return null;
+    	}
+    }
+    
+    /**
+     * Gets a list of wall forces from the force map.
+     */
+    public List<Force> getWallForces(String name) {
+    	if (wallForcesMap.containsKey(name)) {
+    		return wallForcesMap.get(name);
     	} else {
     		return null;
     	}
