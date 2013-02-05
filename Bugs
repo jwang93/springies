@@ -3,4 +3,11 @@ Bugs List:
 1. When a fixed mass is in play, the gravity behaves correctly. When fixed mass is gone, the gravity goes
 in the opposite direction. 
 
-2. 
+2. Problem w/ Center of Mass implementation? 
+	How come when we have only ONE mass, there is still a center of mass force being applied? is that correct? 
+	I guess if you look at the implementation it's not a bug because of this line : 
+				centerMassVector = new Vector(centerMassVector);
+			this ^ is independent of whether we have additional masses in play. but is this line correct? 
+			
+			
+			

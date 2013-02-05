@@ -180,9 +180,10 @@ public class Mass extends Sprite {
 	 * Returns the wall repulsion force on this mass.
 	 */
 	private Vector getWallRepulsionVector(Environment env) {
-		List<Vector> wallRepulsionVectors = env.getWallVectors(Keywords.WALL_KEYWORD);
 		List<Force> wallRepulsionForces = env.getWallForces(Keywords.WALL_KEYWORD);
 		Vector wallRepulsionVector = new Vector();
+
+		if (wallRepulsionForces == null) return new Vector();
 		
 		for (Force wallForce : wallRepulsionForces) {
 			int id = (int) Math.round(wallForce.getProperty("id"));
@@ -195,11 +196,15 @@ public class Mass extends Sprite {
 			}
 			
 			Vector currentWallForce = new Vector();
-			currentWallForce.setMagnitude(wallForce.getProperty("magnitude") * Math.pow(
-					(1.0 / distance), wallForce.getProperty("exponent")));
+			currentWallForce.setMagnitude((1) * (wallForce.getProperty("magnitude") * Math.pow(
+					(1.0 / distance), wallForce.getProperty("exponent"))));
 			double angle = angleBetween(myCenter, otherCenter);
 			currentWallForce.setAngle(angle);
 			wallRepulsionVector.sum(currentWallForce);
+			
+			System.out.println("My Mass is: " + this + 
+					" ; wall repulsion force is: " + wallRepulsionVector.getMagnitude() + " " +
+					"; angle is: " + wallRepulsionVector.getAngle() + " distance: " + distance);
 		}
 
 		return wallRepulsionVector;

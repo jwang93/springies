@@ -144,7 +144,7 @@ public class Environment {
     		return;
     	}
     	Vector vector = new Vector();
-    	Force lastForce = wallForcesMap.get(forceName).get(wallForces.lastIndexOf(wallForces));
+    	Force lastForce = wallForces.get(wallForces.size() - 1);
     	
     	if (lastForce.getProperty("magnitude") != null) {
     		vector.setMagnitude(lastForce.getProperty("magnitude"));
