@@ -17,7 +17,7 @@ import util.Vector;
  * 
  * @author Robert C. Duvall
  */
-public class Mass extends Sprite {
+public class Mass extends Sprite implements SimulationObject {
 	// reasonable default values
 	public static final Dimension DEFAULT_SIZE = new Dimension(16, 16);
 	public static final Pixmap DEFAULT_IMAGE = new Pixmap("mass.gif");
@@ -39,9 +39,9 @@ public class Mass extends Sprite {
 		this.environment = model.getEnvironment();
 	}
 
-    /**
-     * XXX.
-     */
+//    /**
+//     * Paints the mass. Comment out to use .gifs in /images/
+//     */
 //    @Override
 //    public void paint (Graphics2D pen) {
 //        pen.setColor(Color.BLACK);
@@ -76,34 +76,40 @@ public class Mass extends Sprite {
     }
 
 	/**
-	 * XXX.
+	 * Applies environment and bounce forces.
 	 */
 	@Override
 	public void update(double elapsedTime, Dimension bounds) {
 		applyForce(getBounce(bounds));
 		applyEnvironment(environment);
+	}
 
+	/**
+	 * Converts applied forces into velocity.
+	 */
+	@Override
+	public void updateEnd(double elapsedTime, Dimension bounds) {
 		// convert force back into Mover's velocity
 		getVelocity().sum(myAcceleration);
 		myAcceleration.reset();
 		// move mass by velocity
 		super.update(elapsedTime, bounds);
 	}
-
-	/**
-	 * XXX.
-	 */
-	@Override
-	public void paint(Graphics2D pen) {
-		pen.setColor(Color.BLACK);
-		pen.fillOval((int) getLeft(), (int) getTop(), (int) getWidth(),
-				(int) getHeight());
-	}
+	
+//	/**
+//	 * XXX.
+//	 */
+//	@Override
+//	public void paint(Graphics2D pen) {
+//		pen.setColor(Color.BLACK);
+//		pen.fillOval((int) getLeft(), (int) getTop(), (int) getWidth(),
+//				(int) getHeight());
+//	}
 	
 	/**
 	 * Applies environment forces.
 	 */
-	public void applyEnvironment(Environment env) {
+	private void applyEnvironment(Environment env) {
 		Vector gravity = getGravityVector(env);
 		Vector centerMass = getCenterOfMassVector(env);
 		Vector viscosity = getViscosityVector(env);
@@ -150,23 +156,27 @@ public class Mass extends Sprite {
 			return new Vector();
 		}
 		centerMassVector = new Vector(centerMassVector);
-		List<Mass> massList = model.getMasses();
-		for (Mass mass : massList) {
-			if (mass.equals(this)) {
+		List<SimulationObject> objectList = model.getObjects();
+		for (SimulationObject object : objectList) {
+			if (!(object instanceof Mass)) {
+				continue;
+			}
+			Mass mass = (Mass) object;
+			if (object.equals(this)) {
 				continue;
 			}
 			double otherX = mass.getX();
 			double otherY = mass.getY();
 			Location myCenter = new Location(getX(), getY());
 			Location otherCenter = new Location(otherX, otherY);
-			double distance = distanceBetween(myCenter, otherCenter);
+			double distance = Vector.distanceBetween(myCenter, otherCenter);
 			if (distance == 0) {
 				continue;
 			}
 			Vector currentCenterForce = new Vector();
 			currentCenterForce.setMagnitude(centerMassForce.getProperty("magnitude") * Math.pow(
 					(1.0 / distance), centerMassForce.getProperty("exponent")));
-			double angle = angleBetween(myCenter, otherCenter);
+			double angle = Vector.angleBetween(myCenter, otherCenter);
 			currentCenterForce.setAngle(angle);
 			centerMassVector.sum(currentCenterForce);
 		}
@@ -184,22 +194,6 @@ public class Mass extends Sprite {
 	
 	public double getMass() {
 		return myMass;
-	}
-
-	private static double distanceBetween(Point2D p1, Point2D p2) {
-		return distanceBetween(p1.getX() - p2.getX(), p1.getY() - p2.getY());
-	}
-
-	private static double distanceBetween(double dx, double dy) {
-		return Math.sqrt(dx * dx + dy * dy);
-	}
-
-	private static double angleBetween(Point2D p1, Point2D p2) {
-		return angleBetween(p1.getX() - p2.getX(), p1.getY() - p2.getY());
-	}
-
-	private static double angleBetween(double dx, double dy) {
-		return Math.toDegrees(Math.atan2(dy, dx));
 	}
 
 }
