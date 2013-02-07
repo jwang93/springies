@@ -17,7 +17,7 @@ import util.Vector;
  * 
  * @author Robert C. Duvall
  */
-public class Mass extends Sprite {
+public class Mass extends Sprite implements SimulationObject {
 	// reasonable default values
 	public static final Dimension DEFAULT_SIZE = new Dimension(16, 16);
 	public static final Pixmap DEFAULT_IMAGE = new Pixmap("mass.gif");
@@ -39,9 +39,9 @@ public class Mass extends Sprite {
 		this.environment = model.getEnvironment();
 	}
 
-    /**
-     * XXX.
-     */
+//    /**
+//     * Paints the mass. Comment out to use .gifs in /images/
+//     */
 //    @Override
 //    public void paint (Graphics2D pen) {
 //        pen.setColor(Color.BLACK);
@@ -76,40 +76,48 @@ public class Mass extends Sprite {
     }
 
 	/**
-	 * XXX.
+	 * Applies environment and bounce forces.
 	 */
 	@Override
 	public void update(double elapsedTime, Dimension bounds) {
 		applyForce(getBounce(bounds));
 		applyEnvironment(environment);
+	}
 
+	/**
+	 * Converts applied forces into velocity.
+	 */
+	@Override
+	public void updateEnd(double elapsedTime, Dimension bounds) {
 		// convert force back into Mover's velocity
 		getVelocity().sum(myAcceleration);
 		myAcceleration.reset();
 		// move mass by velocity
 		super.update(elapsedTime, bounds);
 	}
-
-	/**
-	 * XXX.
-	 */
-	@Override
-	public void paint(Graphics2D pen) {
-		pen.setColor(Color.BLACK);
-		pen.fillOval((int) getLeft(), (int) getTop(), (int) getWidth(),
-				(int) getHeight());
-	}
+	
+//	/**
+//	 * XXX.
+//	 */
+//	@Override
+//	public void paint(Graphics2D pen) {
+//		pen.setColor(Color.BLACK);
+//		pen.fillOval((int) getLeft(), (int) getTop(), (int) getWidth(),
+//				(int) getHeight());
+//	}
 	
 	/**
 	 * Applies environment forces.
 	 */
-	public void applyEnvironment(Environment env) {
+	private void applyEnvironment(Environment env) {
 		Vector gravity = getGravityVector(env);
 		Vector centerMass = getCenterOfMassVector(env);
 		Vector viscosity = getViscosityVector(env);
+		Vector wallRepulsion = getWallRepulsionVector(env);
 		applyForce(gravity);
 		applyForce(centerMass);
 		applyForce(viscosity);
+		applyForce(wallRepulsion);
 	}
 	
 	/**
@@ -150,28 +158,106 @@ public class Mass extends Sprite {
 			return new Vector();
 		}
 		centerMassVector = new Vector(centerMassVector);
-		List<Mass> massList = model.getMasses();
-		for (Mass mass : massList) {
-			if (mass.equals(this)) {
+		List<SimulationObject> objectList = model.getObjects();
+		for (SimulationObject object : objectList) {
+			if (!(object instanceof Mass)) {
+				continue;
+			}
+			Mass mass = (Mass) object;
+			if (object.equals(this)) {
 				continue;
 			}
 			double otherX = mass.getX();
 			double otherY = mass.getY();
 			Location myCenter = new Location(getX(), getY());
 			Location otherCenter = new Location(otherX, otherY);
-			double distance = distanceBetween(myCenter, otherCenter);
+			double distance = Vector.distanceBetween(myCenter, otherCenter);
 			if (distance == 0) {
 				continue;
 			}
 			Vector currentCenterForce = new Vector();
 			currentCenterForce.setMagnitude(centerMassForce.getProperty("magnitude") * Math.pow(
 					(1.0 / distance), centerMassForce.getProperty("exponent")));
-			double angle = angleBetween(myCenter, otherCenter);
+			double angle = Vector.angleBetween(myCenter, otherCenter);
 			currentCenterForce.setAngle(angle);
 			centerMassVector.sum(currentCenterForce);
 		}
 		return centerMassVector;
 	}
+	
+	/**
+	 * Returns the wall repulsion force on this mass.
+	 */
+	private Vector getWallRepulsionVector(Environment env) {
+		List<Force> wallRepulsionForces = env.getWallForces(Keywords.WALL_KEYWORD);
+		Vector wallRepulsionVector = new Vector();
+
+		if (wallRepulsionForces == null) return new Vector();
+		
+		for (Force wallForce : wallRepulsionForces) {
+			int id = (int) Math.round(wallForce.getProperty("id"));
+			Location myCenter = new Location(getX(), getY());
+			Location otherCenter = getWallLocation(id);
+			double distance = Vector.distanceBetween(myCenter, otherCenter);
+			
+			if (distance == 0) {
+				continue;
+			}
+			
+			Vector currentWallForce = new Vector();
+			currentWallForce.setMagnitude((1) * (wallForce.getProperty("magnitude") * Math.pow(
+					(1.0 / distance), wallForce.getProperty("exponent"))));
+			double angle = Vector.angleBetween(myCenter, otherCenter);
+			currentWallForce.setAngle(angle);
+			wallRepulsionVector.sum(currentWallForce);
+			
+//			System.out.println("My Mass is: " + this + 
+//					" ; wall repulsion force is: " + wallRepulsionVector.getMagnitude() + " " +
+//					"; angle is: " + wallRepulsionVector.getAngle() + " distance: " + distance);
+		}
+
+		return wallRepulsionVector;
+	}
+	
+	
+	
+	private Location getWallLocation(int id) {
+		double otherX, otherY;
+		switch (id) {
+		// wall is on TOP, so otherX = this.getX()
+		case 1:
+			otherX = this.getX();
+			otherY = 0;
+			break;
+
+		// wall is on the RIGHT; Dimension is (800, 600)
+		case 2:
+			otherX = 800; // fix this hard coded bit
+			otherY = this.getY();
+			break;
+
+		// wall is on the BOTTOM
+		case 3:
+			otherX = this.getX();
+			otherY = 600;
+			break;
+
+		// wall is on the LEFT
+		case 4:
+			otherX = 0;
+			otherY = this.getY();
+			break;
+
+		// default: set wall = current position
+		default:
+			otherX = this.getX();
+			otherY = this.getY();
+			break;
+		}
+		
+		return new Location(otherX, otherY);
+	}
+	
 	
 	/**
 	 * Convenience method.
@@ -184,22 +270,6 @@ public class Mass extends Sprite {
 	
 	public double getMass() {
 		return myMass;
-	}
-
-	private static double distanceBetween(Point2D p1, Point2D p2) {
-		return distanceBetween(p1.getX() - p2.getX(), p1.getY() - p2.getY());
-	}
-
-	private static double distanceBetween(double dx, double dy) {
-		return Math.sqrt(dx * dx + dy * dy);
-	}
-
-	private static double angleBetween(Point2D p1, Point2D p2) {
-		return angleBetween(p1.getX() - p2.getX(), p1.getY() - p2.getY());
-	}
-
-	private static double angleBetween(double dx, double dy) {
-		return Math.toDegrees(Math.atan2(dy, dx));
 	}
 
 }
