@@ -113,9 +113,11 @@ public class Mass extends Sprite implements SimulationObject {
 		Vector gravity = getGravityVector(env);
 		Vector centerMass = getCenterOfMassVector(env);
 		Vector viscosity = getViscosityVector(env);
+		Vector wallRepulsion = getWallRepulsionVector(env);
 		applyForce(gravity);
 		applyForce(centerMass);
 		applyForce(viscosity);
+		applyForce(wallRepulsion);
 	}
 	
 	/**
@@ -182,6 +184,80 @@ public class Mass extends Sprite implements SimulationObject {
 		}
 		return centerMassVector;
 	}
+	
+	/**
+	 * Returns the wall repulsion force on this mass.
+	 */
+	private Vector getWallRepulsionVector(Environment env) {
+		List<Force> wallRepulsionForces = env.getWallForces(Keywords.WALL_KEYWORD);
+		Vector wallRepulsionVector = new Vector();
+
+		if (wallRepulsionForces == null) return new Vector();
+		
+		for (Force wallForce : wallRepulsionForces) {
+			int id = (int) Math.round(wallForce.getProperty("id"));
+			Location myCenter = new Location(getX(), getY());
+			Location otherCenter = getWallLocation(id);
+			double distance = Vector.distanceBetween(myCenter, otherCenter);
+			
+			if (distance == 0) {
+				continue;
+			}
+			
+			Vector currentWallForce = new Vector();
+			currentWallForce.setMagnitude((1) * (wallForce.getProperty("magnitude") * Math.pow(
+					(1.0 / distance), wallForce.getProperty("exponent"))));
+			double angle = Vector.angleBetween(myCenter, otherCenter);
+			currentWallForce.setAngle(angle);
+			wallRepulsionVector.sum(currentWallForce);
+			
+//			System.out.println("My Mass is: " + this + 
+//					" ; wall repulsion force is: " + wallRepulsionVector.getMagnitude() + " " +
+//					"; angle is: " + wallRepulsionVector.getAngle() + " distance: " + distance);
+		}
+
+		return wallRepulsionVector;
+	}
+	
+	
+	
+	private Location getWallLocation(int id) {
+		double otherX, otherY;
+		switch (id) {
+		// wall is on TOP, so otherX = this.getX()
+		case 1:
+			otherX = this.getX();
+			otherY = 0;
+			break;
+
+		// wall is on the RIGHT; Dimension is (800, 600)
+		case 2:
+			otherX = 800; // fix this hard coded bit
+			otherY = this.getY();
+			break;
+
+		// wall is on the BOTTOM
+		case 3:
+			otherX = this.getX();
+			otherY = 600;
+			break;
+
+		// wall is on the LEFT
+		case 4:
+			otherX = 0;
+			otherY = this.getY();
+			break;
+
+		// default: set wall = current position
+		default:
+			otherX = this.getX();
+			otherY = this.getY();
+			break;
+		}
+		
+		return new Location(otherX, otherY);
+	}
+	
 	
 	/**
 	 * Convenience method.

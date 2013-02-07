@@ -1,2 +1,3 @@
 gravity 90 0.1
 centermass -0.2 2.0
+wall 4 20.0 .6
