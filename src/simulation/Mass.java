@@ -59,13 +59,13 @@ public class Mass extends Sprite implements SimulationObject {
     private Vector getBounce (Dimension bounds) {
         final double IMPULSE_MAGNITUDE = 2;
         Vector impulse = new Vector();
-        if (getLeft() < 0) {
+        if (getLeft() < Keywords.ZERO) {
             impulse = new Vector(RIGHT_DIRECTION, IMPULSE_MAGNITUDE);
         }
         else if (getRight() > bounds.width) {
             impulse = new Vector(LEFT_DIRECTION, IMPULSE_MAGNITUDE);
         }
-        if (getTop() < 0) {
+        if (getTop() < Keywords.ZERO) {
             impulse = new Vector(DOWN_DIRECTION, IMPULSE_MAGNITUDE);
         }
         else if (getBottom() > bounds.height) {
@@ -131,7 +131,7 @@ public class Mass extends Sprite implements SimulationObject {
 		Vector viscosity = new Vector(getVelocity());
 		double viscosityScale = viscosityForce.getProperty("scale");
 		viscosity.setMagnitude(viscosity.getMagnitude() * viscosityScale);
-		viscosity.turn(180);
+		viscosity.turn(Keywords.DEGREES_TURN_AROUND);
 		return viscosity;
 	}
 	
@@ -172,7 +172,7 @@ public class Mass extends Sprite implements SimulationObject {
 			Location myCenter = new Location(getX(), getY());
 			Location otherCenter = new Location(otherX, otherY);
 			double distance = Vector.distanceBetween(myCenter, otherCenter);
-			if (distance == 0) {
+			if (distance == Keywords.ZERO) {
 				continue;
 			}
 			Vector currentCenterForce = new Vector();
@@ -184,7 +184,7 @@ public class Mass extends Sprite implements SimulationObject {
 		}
 		return centerMassVector;
 	}
-	
+		
 	/**
 	 * Returns the wall repulsion force on this mass.
 	 */
@@ -200,13 +200,14 @@ public class Mass extends Sprite implements SimulationObject {
 			Location otherCenter = getWallLocation(id);
 			double distance = Vector.distanceBetween(myCenter, otherCenter);
 			
-			if (distance == 0) {
+			if (distance == Keywords.ZERO) {
 				continue;
 			}
 			
 			Vector currentWallForce = new Vector();
-			currentWallForce.setMagnitude((1) * (wallForce.getProperty("magnitude") * Math.pow(
-					(1.0 / distance), wallForce.getProperty("exponent"))));
+			currentWallForce.setMagnitude(wallForce.getProperty("magnitude") * Math.pow(
+					((double) Keywords.ONE / distance), wallForce.getProperty("exponent")));
+					//this is the algorithm for calculating magnitude (same alg as for Center of Mass) 
 			double angle = Vector.angleBetween(myCenter, otherCenter);
 			currentWallForce.setAngle(angle);
 			wallRepulsionVector.sum(currentWallForce);
@@ -227,24 +228,24 @@ public class Mass extends Sprite implements SimulationObject {
 		// wall is on TOP, so otherX = this.getX()
 		case 1:
 			otherX = this.getX();
-			otherY = 0;
+			otherY = Keywords.ZERO;
 			break;
 
-		// wall is on the RIGHT; Dimension is (800, 600)
+		// wall is on the RIGHT
 		case 2:
-			otherX = 800; // fix this hard coded bit
+			otherX = Keywords.CANVAS_WIDTH; 
 			otherY = this.getY();
 			break;
 
 		// wall is on the BOTTOM
 		case 3:
 			otherX = this.getX();
-			otherY = 600;
+			otherY = Keywords.CANVAS_HEIGHT;
 			break;
 
 		// wall is on the LEFT
 		case 4:
-			otherX = 0;
+			otherX = Keywords.ZERO;
 			otherY = this.getY();
 			break;
 
@@ -264,8 +265,7 @@ public class Mass extends Sprite implements SimulationObject {
 	 */
 	public double distance(Mass other) {
 		// this is a little awkward, so hide it
-		return new Location(getX(), getY()).distance(new Location(other.getX(),
-				other.getY()));
+		return new Location(getX(), getY()).distance(new Location(other.getX(), other.getY()));
 	}
 	
 	public double getMass() {

@@ -66,7 +66,7 @@ public class Spring extends Sprite implements SimulationObject {
         // update sprite values based on attached masses
         setCenter(getCenter(myStart, myEnd));
         setSize(getSize(myStart, myEnd));
-        setVelocity(Vector.angleBetween(dx, dy), 0);
+        setVelocity(Vector.angleBetween(dx, dy), Keywords.ZERO);
     }
     
     /**
@@ -88,8 +88,8 @@ public class Spring extends Sprite implements SimulationObject {
      * Convenience method.
      */
     protected Color getColor (double diff) {
-        if (Vector.fuzzyEquals(diff, 0)) return Color.BLACK;
-        else if (diff < 0.0) return Color.BLUE;
+        if (Vector.fuzzyEquals(diff, Keywords.ZERO)) return Color.BLACK;
+        else if (diff < (double) Keywords.ZERO) return Color.BLUE;
         else return Color.RED;
     }
 
