@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import view.Canvas;
+
 
 /**
  * XXX
@@ -16,6 +18,11 @@ public class Factory {
 
     // mass IDs
     Map<Integer, Mass> myMasses = new HashMap<Integer, Mass>();
+    private Canvas canvas; 
+    
+    public Factory (Canvas canvas) {
+    	this.canvas = canvas;
+    }
     
     /**
      * XXX.

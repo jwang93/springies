@@ -19,8 +19,8 @@ public class Model {
     private Canvas myView;
     private Environment myEnvironment;
     // simulation state
-    private List<Mass> myMasses;
-    private List<Spring> mySprings; 
+    private List<SimulationObject> myObjects;
+    public int count;
 
     /**
      * Create a game of the given size with the given display for its shapes.
@@ -28,19 +28,15 @@ public class Model {
     public Model (Canvas canvas) {
         myView = canvas;
         myEnvironment = null;
-        myMasses = new ArrayList<Mass>();
-        mySprings = new ArrayList<Spring>();
+        myObjects = new ArrayList<SimulationObject>();
     }
 
     /**
      * Draw all elements of the simulation.
      */
     public void paint (Graphics2D pen) {
-        for (Spring s : mySprings) {
-            s.paint(pen);
-        }
-        for (Mass m : myMasses) {
-            m.paint(pen);
+        for (SimulationObject o : myObjects) {
+            o.paint(pen);
         }
     }
 
@@ -48,34 +44,28 @@ public class Model {
      * Update simulation for this moment, given the time since the last moment.
      */
     public void update (double elapsedTime) {
+    	count++;
         Dimension bounds = myView.getSize();
-        for (Spring s : mySprings) {
-            s.update(elapsedTime, bounds);
+        for (SimulationObject o : myObjects) {
+            o.update(elapsedTime, bounds);
         }
-        for (Mass m : myMasses) {
-            m.update(elapsedTime, bounds);
+        for (SimulationObject o : myObjects) {
+            o.updateEnd(elapsedTime, bounds);
         }
     }
 
     /**
-     * Add given mass to this simulation.
+     * Add given object to this simulation.
      */
-    public void add (Mass mass) {
-        myMasses.add(mass);
-    }
-
-    /**
-     * Add given spring to this simulation.
-     */
-    public void add (Spring spring) {
-        mySprings.add(spring);
+    public void add (SimulationObject object) {
+        myObjects.add(object);
     }
     
     /**
      * Returns list of all masses in model.
      */
-    public List<Mass> getMasses() {
-    	return myMasses;
+    public List<SimulationObject> getObjects() {
+    	return myObjects;
     }
     
     /**
@@ -90,6 +80,13 @@ public class Model {
      */
     public void setEnvironment(Environment env) {
     	myEnvironment = env;
+    }
+    
+    /**
+     * Returns the canvas.
+     */
+    public Canvas getCanvas() {
+    	return myView;
     }
     
 }

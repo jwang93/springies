@@ -13,3 +13,11 @@ and Gravity are... We need to think how we're going to handle that? Maybe add mo
 them be different classes is in my Factory.java file, when I call the add() method, because it is an overloaded method, it knows which type of force it is 
 based on it's class type. (... don't know if that made sense) 
 
+
+
+For Part 3:
+
+1. I'm feeding the Factory a Canvas object because each of the masses need a canvas object to be able to tell which was the last key pressed.
+	How can we circumvent this issue? 
+	
+	
