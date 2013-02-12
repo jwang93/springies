@@ -17,8 +17,8 @@ import view.Canvas;
 public class Factory {
 
     // mass IDs
-    Map<Integer, Mass> myMasses = new HashMap<Integer, Mass>();
-    private Canvas canvas; 
+    private Map<Integer, Mass> myMasses = new HashMap<Integer, Mass>();
+    private Canvas canvas;
     
     public Factory (Canvas canvas) {
     	this.canvas = canvas;

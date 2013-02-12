@@ -33,6 +33,22 @@ public class Keywords {
     public static final int TOGGLE_WALL_2 = KeyEvent.VK_2;
     public static final int TOGGLE_WALL_3 = KeyEvent.VK_3;
     public static final int TOGGLE_WALL_4 = KeyEvent.VK_4;
+    public static final int INCREASE_BOUNDS = KeyEvent.VK_UP;
+    public static final int DECREASE_BOUNDS = KeyEvent.VK_DOWN;
+
+    public static final int ASCII_VALUE_ZERO = 48;
+
+
+    public static final double DEFAULT_VISCOSITY_SCALE = 0.5;
+    public static final double DEFAULT_GRAVITY_MAGNITUDE = 1.5;
+    public static final double DEFAULT_GRAVITY_ANGLE = 90.0;
+    public static final double DEFAULT_CENTER_OF_MASS_MAGNITUDE = 0.5;
+    public static final double DEFAULT_CENTER_OF_MASS_EXPONENT = 1.0;
+    public static final double DEFAULT_WALL_REPULSION_MAGNITUDE = 20.0;
+    public static final double DEFAULT_WALL_REPULSION_EXPONENT = 0.7;
+	public static final double PIXEL_ADJUSTMENT = 10.0;
+
+
 
 
 

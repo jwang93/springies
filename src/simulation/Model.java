@@ -38,6 +38,7 @@ public class Model {
         for (SimulationObject o : myObjects) {
             o.paint(pen);
         }
+        
     }
 
     /**
@@ -87,6 +88,13 @@ public class Model {
      */
     public Canvas getCanvas() {
     	return myView;
+    }
+    
+    /**
+     * Returns the bounds
+     */
+    public Dimension getBounds() {
+    	return myView.getSize();
     }
     
 }
