@@ -31,9 +31,7 @@ public class Mass extends Sprite implements SimulationObject {
 	
 	private Model model;
 	private Environment environment;
-	private Canvas canvas;
-	private Dimension adjustableBounds;
-	
+	private Dimension myView;
 	private boolean[] toggleForces = new boolean[7];
 	private Map<String, Integer> toggleMap = new HashMap<String, Integer>();
 	private Map<Integer, String> toggleKeysMap = new HashMap<Integer, String>();
@@ -47,10 +45,9 @@ public class Mass extends Sprite implements SimulationObject {
 		myAcceleration = new Vector();
 		this.model = model;
 		this.environment = model.getEnvironment();
-		this.canvas = model.getCanvas();
 		setupToggleForces();
 		printForces();
-		adjustableBounds = model.getBounds();
+		myView = model.getBounds();
 	}
 
 	
@@ -129,45 +126,13 @@ public class Mass extends Sprite implements SimulationObject {
 	 * Applies environment and bounce forces.
 	 */
 	@Override
-	public void update(double elapsedTime, Dimension bounds) {
-		int lastKeyPressed = canvas.getLastKeyPressed();
-		applyAdjustBounds(lastKeyPressed);
+	public void update(double elapsedTime, Dimension bounds, int lastKeyPressed) {
+		myView = bounds;
 		applyToggle(lastKeyPressed);
-		applyForce(getBounce(adjustableBounds));
+		applyForce(getBounce(bounds));
 		applyEnvironment(environment);
 	}
 	
-	
-	private void applyAdjustBounds(int lastKeyPressed) {
-		double currentHeight = adjustableBounds.getHeight();
-		double currentWidth = adjustableBounds.getWidth();
-		if (lastKeyPressed == Keywords.INCREASE_BOUNDS) {
-			adjustableBounds.setSize(currentWidth + Keywords.PIXEL_ADJUSTMENT, currentHeight + Keywords.PIXEL_ADJUSTMENT);
-			printBounds();
-		}
-		
-		else if (lastKeyPressed == Keywords.DECREASE_BOUNDS && canvasLargeEnough() && massInBounds(currentWidth - Keywords.PIXEL_ADJUSTMENT, currentHeight - Keywords.PIXEL_ADJUSTMENT)) {
-			adjustableBounds.setSize(currentWidth - Keywords.PIXEL_ADJUSTMENT, currentHeight - Keywords.PIXEL_ADJUSTMENT);
-			printBounds();
-		}
-	}
-
-
-	private boolean massInBounds(double projectedX, double projectedY) {
-		if (this.getX() < projectedX && this.getY() < projectedY) {
-			return true;
-		}
-		return false;
-	}
-
-
-	private boolean canvasLargeEnough() {
-		if (adjustableBounds.getHeight() > 10.0 && adjustableBounds.getWidth() > 10.0) {
-			return true;
-		}
-		return false;
-	}
-
 
 	private void applyToggle(int key) {
 		String force = toggleKeysMap.get(key);
@@ -176,15 +141,8 @@ public class Mass extends Sprite implements SimulationObject {
 			System.out.println("JUST TOGGLED A FORCE!!");
 			printForces();
 		}
-		
-		
 	}
-	
-	private void printBounds() {
-		System.out.println("Bounds: Height: " + adjustableBounds.getHeight() + " Width: " + adjustableBounds.getWidth());
-		System.out.println();
-	}
-	
+		
 	private void printForces() {
 		for (int i = 0; i < toggleForces.length; i++) {
 			System.out.print("Entry " + i + ": " + toggleForces[i] + " ");
@@ -479,8 +437,6 @@ public class Mass extends Sprite implements SimulationObject {
 		return wallRepulsionVector;
 	}
 	
-	
-	
 	private Location getWallLocation(int id) {
 		double otherX, otherY;
 		switch (id) {
@@ -492,14 +448,14 @@ public class Mass extends Sprite implements SimulationObject {
 
 		// wall is on the RIGHT
 		case 2:
-			otherX = Keywords.CANVAS_WIDTH; 
+			otherX = myView.getWidth(); 
 			otherY = this.getY();
 			break;
 
 		// wall is on the BOTTOM
 		case 3:
 			otherX = this.getX();
-			otherY = Keywords.CANVAS_HEIGHT;
+			otherY = myView.getHeight();
 			break;
 
 		// wall is on the LEFT

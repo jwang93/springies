@@ -50,7 +50,7 @@ public class Spring extends Sprite implements SimulationObject {
      * XXX.
      */
     @Override
-    public void update (double elapsedTime, Dimension bounds) {
+    public void update (double elapsedTime, Dimension bounds, int LastKeyPressed) {
     	if (springUpdated) {
     		return;
     	}

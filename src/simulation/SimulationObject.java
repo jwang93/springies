@@ -8,7 +8,7 @@ public interface SimulationObject {
 	/**
 	 * Updates the object as needed for the update cycle.
 	 */
-	public void update(double elapsedTime, Dimension bounds);
+	public void update(double elapsedTime, Dimension bounds, int lastKeyPressed);
 	
 	/**
 	 * Paints the object on the canvas.

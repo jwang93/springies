@@ -39,7 +39,7 @@ public class Keywords {
     public static final int ASCII_VALUE_ZERO = 48;
 
 
-    public static final double DEFAULT_VISCOSITY_SCALE = 0.5;
+    public static final double DEFAULT_VISCOSITY_SCALE = 1.5;
     public static final double DEFAULT_GRAVITY_MAGNITUDE = 1.5;
     public static final double DEFAULT_GRAVITY_ANGLE = 90.0;
     public static final double DEFAULT_CENTER_OF_MASS_MAGNITUDE = 0.5;
