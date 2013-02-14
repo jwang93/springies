@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.util.List;
 import java.util.ArrayList;
 
+import util.Location;
 import util.Vector;
 import view.Canvas;
 
@@ -13,7 +14,7 @@ import view.Canvas;
 /**
  * XXX.
  * 
- * @author Robert C. Duvall
+ * @author Robert C. Duvall, Jay Wang, James Wei 
  */
 public class Model {
     // bounds and input for game
@@ -22,7 +23,8 @@ public class Model {
     // simulation state
     private List<SimulationObject> myObjects;
 	private Dimension adjustableBounds;
-
+	InvisibleMass myMass;
+	Spring mySpring;
     public int count;
 
     /**
@@ -54,10 +56,13 @@ public class Model {
      * Update simulation for this moment, given the time since the last moment.
      */
     public void update (double elapsedTime) {
-    	count++;
-        
+    	boolean mousePressed = myView.mousePressed();
+    	boolean mouseReleased = myView.mouseReleased();
 		int lastKeyPressed = myView.getLastKeyPressed();
+		
 		applyAdjustBounds(lastKeyPressed);
+		handleMouseDragging(mousePressed, mouseReleased);
+		changeInvisibleMassLocation();
         for (SimulationObject o : myObjects) {
             o.update(elapsedTime, adjustableBounds, lastKeyPressed);
         }
@@ -66,7 +71,60 @@ public class Model {
         }
     }
 
-    /**
+    private void changeInvisibleMassLocation() {
+		if (myMass != null) {
+			myMass.changeLocation(myView.getLastMousePosition());		
+		}
+	}
+
+	private void handleMouseDragging(boolean mousePressed, boolean mouseReleased) {
+		if (mousePressed == true) {
+    		myMass = createInvisibleMass(mousePressed);
+    		Mass nearestMass = getNearestMass(myMass); 
+    		mySpring = new Spring (myMass, nearestMass, Keywords.DEFAULT_REST_LENGTH, Keywords.DEFAULT_K_VALUE);
+    		myObjects.add(mySpring);
+    	}
+		
+		if (mouseReleased == true) {
+			myObjects.remove(myMass);
+			myObjects.remove(mySpring);
+		}
+		
+	}
+
+	private Mass getNearestMass(Mass myMass) {
+		Mass nearestMass = new Mass(0, 0, 0, this); 
+		double distance = Double.MAX_VALUE;
+		for (SimulationObject m : myObjects) {
+			if (myMass.equals(m)) continue;
+			if (!(m instanceof Mass)) continue;		
+			double newDistance = distance(myMass, (Mass) m);
+			if (newDistance < distance) {
+				System.out.println("Going in");
+				nearestMass = (Mass) m;
+				distance = newDistance;
+			}
+		}
+		return nearestMass;
+	}
+
+	public double distance(Mass mass1, Mass mass2) {
+		// this is a little awkward, so hide it
+		if (mass1.equals(null) ) return 0.0;
+		return new Location(mass1.getX(), mass1.getY()).distance(new Location(mass2.getX(), mass2.getY()));
+	}
+	
+    
+	private InvisibleMass createInvisibleMass(boolean mousePressed) {
+    	if (mousePressed) {
+    		InvisibleMass mass = new InvisibleMass(myView.getLastMousePosition().getX(), myView.getLastMousePosition().getY(), Keywords.DEFAULT_MASS, this);
+    		myObjects.add(mass);
+    		return mass;
+    	}
+    	return null;
+	}
+
+	/**
      * Add given object to this simulation.
      */
     public void add (SimulationObject object) {

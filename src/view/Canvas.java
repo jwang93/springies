@@ -59,6 +59,8 @@ public class Canvas extends JComponent {
     private int myLastKeyReleased;
 
     private Point myLastMousePosition;
+    private boolean mousePressed;
+    private boolean mouseReleased;
     private Set<Integer> myKeys;
 
 
@@ -120,7 +122,21 @@ public class Canvas extends JComponent {
     public Point getLastMousePosition () {
         return myLastMousePosition;
     }
+    
+    
+    public boolean mousePressed() {
+    	boolean ret_value = mousePressed;
+    	mousePressed = false;
+    	return ret_value;
+    }
 
+    
+    public boolean mouseReleased() {
+    	boolean ret_value = mouseReleased;
+    	mouseReleased = false;
+    	return ret_value;
+    }
+    
     /**
      * Start the animation.
      */
@@ -177,6 +193,7 @@ public class Canvas extends JComponent {
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged (MouseEvent e) {
+            	System.out.println(e.getPoint());
                 myLastMousePosition = e.getPoint();
             }
         });
@@ -184,11 +201,13 @@ public class Canvas extends JComponent {
             @Override
             public void mousePressed (MouseEvent e) {
                 myLastMousePosition = e.getPoint();
+                mousePressed = true;
             }
 
             @Override
             public void mouseReleased (MouseEvent e) {
                 myLastMousePosition = NO_MOUSE_PRESSED;
+                mouseReleased = true;
             }
         });
     }
