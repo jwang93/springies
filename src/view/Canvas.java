@@ -56,7 +56,11 @@ public class Canvas extends JComponent {
     private Model mySimulation;
     // input state
     private int myLastKeyPressed;
+    private int myLastKeyReleased;
+
     private Point myLastMousePosition;
+    private boolean mousePressed;
+    private boolean mouseReleased;
     private Set<Integer> myKeys;
 
 
@@ -96,7 +100,13 @@ public class Canvas extends JComponent {
      * Returns last key pressed by the user or -1 if nothing is pressed.
      */
     public int getLastKeyPressed () {
-        return myLastKeyPressed;
+    	int ret_value = myLastKeyPressed;
+    	myLastKeyPressed = NO_KEY_PRESSED;
+        return ret_value;
+    }
+    
+    public int getLastKeyReleased() {
+    	return myLastKeyReleased;
     }
 
     /**
@@ -112,7 +122,21 @@ public class Canvas extends JComponent {
     public Point getLastMousePosition () {
         return myLastMousePosition;
     }
+    
+    
+    public boolean mousePressed() {
+    	boolean ret_value = mousePressed;
+    	mousePressed = false;
+    	return ret_value;
+    }
 
+    
+    public boolean mouseReleased() {
+    	boolean ret_value = mouseReleased;
+    	mouseReleased = false;
+    	return ret_value;
+    }
+    
     /**
      * Start the animation.
      */
@@ -161,14 +185,15 @@ public class Canvas extends JComponent {
             }
             @Override
             public void keyReleased (KeyEvent e) {
-                myLastKeyPressed = NO_KEY_PRESSED;
-                myKeys.remove((Integer)e.getKeyCode());
+                myLastKeyReleased = e.getKeyCode();
+                myKeys.add(e.getKeyCode());
             }
         });
         myLastMousePosition = NO_MOUSE_PRESSED;
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged (MouseEvent e) {
+            	System.out.println(e.getPoint());
                 myLastMousePosition = e.getPoint();
             }
         });
@@ -176,18 +201,20 @@ public class Canvas extends JComponent {
             @Override
             public void mousePressed (MouseEvent e) {
                 myLastMousePosition = e.getPoint();
+                mousePressed = true;
             }
 
             @Override
             public void mouseReleased (MouseEvent e) {
                 myLastMousePosition = NO_MOUSE_PRESSED;
+                mouseReleased = true;
             }
         });
     }
 
     // load model from file chosen by user
     private void loadModel () {
-        Factory factory = new Factory();
+        Factory factory = new Factory(this);
         int response = INPUT_CHOOSER.showOpenDialog(null);
         if (response == JFileChooser.APPROVE_OPTION) {
             factory.loadModel(mySimulation, INPUT_CHOOSER.getSelectedFile());

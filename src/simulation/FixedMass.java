@@ -3,6 +3,7 @@ package simulation;
 import java.awt.Dimension;
 
 import util.Vector;
+import view.Canvas;
 
 public class FixedMass extends Mass {
 

@@ -1,0 +1,110 @@
+Specs: 
+
+Allow users to interact with the simulation while it is animating.
+
+Multiple assemblies
+By pressing 'n', allow users to load a new assembly into the simulation. It should be possible to animate multiple assemblies during the same simulation.
+By pressing 'c', allow users to clear all loaded assemblies.
+
+Mouse dragging
+By clicking and dragging the mouse, allow users to interact with an assembly. When clicked, the nearest mass (in any assembly) should be selected and a 
+spring created between that mass and the current mouse position. The rest length of the spring should be determined automatically so that the user can 
+pull the assembly by moving the mouse away from it or push it by moving towards it. This spring should be removed when the mouse is released so the user 
+can click again to interact with another assembly.
+
+
+**DONE** 
+Toggle forces
+By pressing 'g', 'v', 'm', allow users to toggle (turn on if it is off and off if it is on) the application of gravity, viscosity, and center of mass 
+forces, respectively.
+By pressing '1', '2', '3', '4', allow users to toggle (turn on if it is off and off if it is on) the application of the appropriate wall repulsion forces.
+If a forces' values were not given in an environment data file, use a default value.
+********
+
+
+
+**DONE** *BUT I NEED TWO DESIGN CHANGES --> you should not update the bounds in Mass, paint the border* **DESIGN CHANGES DONE**
+Change size of walled area
+By pressing up arrow or down arrow, allow user to increase or decrease the size of the walled area in which the assemblies animate by 10 pixels on each 
+side. This separates the area's size from that of the Canvas. It is okay to make the size larger than the Canvas's size, that just means an assembly 
+(i.e., a pendulum) would not bounce off the sides of the window.
+********
+
+
+Notes:
+	Definitely need to implement MouseListener and KeyListener 
+	In Game, Duvall implemented getLastKeyPressed() and getLastMouseLocation() from Canvas.java 
+	All of this is also taken care of for us in springies/Canvas.java 
+
+Here are the available functions: 
+    
+    /**
+     * Returns last key pressed by the user or -1 if nothing is pressed.
+     */
+    public int getLastKeyPressed () {
+        return myLastKeyPressed;
+    }
+
+    /**
+     * Returns all keys currently pressed by the user.
+     */
+    public Collection<Integer> getKeysPressed () {
+        return Collections.unmodifiableSet(myKeys);
+    }
+
+    /**
+     * Returns last position of the mouse in the canvas.
+     */
+    public Point getLastMousePosition () {
+        return myLastMousePosition;
+    }
+    
+They are handled by a setInputListeners() class. 
+
+
+Design Notes:
+
+Check starting forces:
+	idea is to set each boolean (gravity, viscosity, centerOfMass, wallRepulsion) to T/F depending on whether it exists
+	
+	
+Design Change:
+	Mass is way too long and the methods in it are too long
+	Export that into it's own class? 
+	
+
+
+Plan for Mouse Feature 2: 
+
+Mouse dragging
+By clicking and dragging the mouse, allow users to interact with an assembly. When clicked, the nearest mass (in any assembly) should be selected and a 
+spring created between that mass and the current mouse position. The rest length of the spring should be determined automatically so that the user can 
+pull the assembly by moving the mouse away from it or push it by moving towards it. This spring should be removed when the mouse is released so the user 
+can click again to interact with another assembly.
+
+
+0. create a class called invisible mass 
+1. when you click a position, you need to make a mass (have it be invisible) 
+2. connect this mass to the closest mass with a spring 
+3. change the location of invisible mass based on the mouse position 
+4. when mouse released, need to kill the spring and the invisible mass 
+
+**BUGS**
+	1. When you click, a spring is created but it's not created for the nearest mass 
+	 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
