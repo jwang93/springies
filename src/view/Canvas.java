@@ -7,8 +7,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -19,8 +19,6 @@ import java.util.TreeSet;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.Timer;
-
-import simulation.Environment;
 import simulation.Factory;
 import simulation.Model;
 
@@ -28,9 +26,9 @@ import simulation.Model;
 /**
  * Creates an area of the screen in which the game will be drawn that supports:
  * <UL>
- *   <LI>animation via the Timer
- *   <LI>mouse input via the MouseListener and MouseMotionListener
- *   <LI>keyboard input via the KeyListener
+ * <LI>animation via the Timer
+ * <LI>mouse input via the MouseListener and MouseMotionListener
+ * <LI>keyboard input via the KeyListener
  * </UL>
  * 
  * @author Robert C Duvall
@@ -44,7 +42,7 @@ public class Canvas extends JComponent {
     public static final int ONE_SECOND = 1000;
     public static final int DEFAULT_DELAY = ONE_SECOND / FRAMES_PER_SECOND;
     // only one so that it maintains user's preferences
-    private static final JFileChooser INPUT_CHOOSER = 
+    private static final JFileChooser INPUT_CHOOSER =
             new JFileChooser(System.getProperties().getProperty("user.dir"));
     // input state
     public static final int NO_KEY_PRESSED = -1;
@@ -62,7 +60,6 @@ public class Canvas extends JComponent {
     private boolean mousePressed;
     private boolean mouseReleased;
     private Set<Integer> myKeys;
-
 
     /**
      * Create a panel so that it knows its size
@@ -100,13 +97,13 @@ public class Canvas extends JComponent {
      * Returns last key pressed by the user or -1 if nothing is pressed.
      */
     public int getLastKeyPressed () {
-    	int ret_value = myLastKeyPressed;
-    	myLastKeyPressed = NO_KEY_PRESSED;
+        int ret_value = myLastKeyPressed;
+        myLastKeyPressed = NO_KEY_PRESSED;
         return ret_value;
     }
-    
-    public int getLastKeyReleased() {
-    	return myLastKeyReleased;
+
+    public int getLastKeyReleased () {
+        return myLastKeyReleased;
     }
 
     /**
@@ -122,32 +119,31 @@ public class Canvas extends JComponent {
     public Point getLastMousePosition () {
         return myLastMousePosition;
     }
-    
-    
-    public boolean mousePressed() {
-    	boolean ret_value = mousePressed;
-    	mousePressed = false;
-    	return ret_value;
+
+    public boolean mousePressed () {
+        boolean ret_value = mousePressed;
+        mousePressed = false;
+        return ret_value;
     }
 
-    
-    public boolean mouseReleased() {
-    	boolean ret_value = mouseReleased;
-    	mouseReleased = false;
-    	return ret_value;
+    public boolean mouseReleased () {
+        boolean ret_value = mouseReleased;
+        mouseReleased = false;
+        return ret_value;
     }
-    
+
     /**
      * Start the animation.
      */
     public void start () {
         // create a timer to animate the canvas
-        myTimer = new Timer(DEFAULT_DELAY, 
-            new ActionListener() {
-                public void actionPerformed (ActionEvent e) {
-                    step();
-                }
-            });
+        myTimer = new Timer(DEFAULT_DELAY,
+                            new ActionListener() {
+                                @Override
+                                public void actionPerformed (ActionEvent e) {
+                                    step();
+                                }
+                            });
         // start animation
         mySimulation = new Model(this);
         loadModel();
@@ -165,7 +161,7 @@ public class Canvas extends JComponent {
      * Take one step in the animation.
      */
     public void step () {
-        mySimulation.update((double)FRAMES_PER_SECOND / ONE_SECOND);
+        mySimulation.update((double) FRAMES_PER_SECOND / ONE_SECOND);
         // indirectly causes paint to be called
         repaint();
     }
@@ -183,6 +179,7 @@ public class Canvas extends JComponent {
                 myLastKeyPressed = e.getKeyCode();
                 myKeys.add(e.getKeyCode());
             }
+
             @Override
             public void keyReleased (KeyEvent e) {
                 myLastKeyReleased = e.getKeyCode();
@@ -193,7 +190,7 @@ public class Canvas extends JComponent {
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged (MouseEvent e) {
-            	System.out.println(e.getPoint());
+                System.out.println(e.getPoint());
                 myLastMousePosition = e.getPoint();
             }
         });
@@ -213,12 +210,12 @@ public class Canvas extends JComponent {
     }
 
     // load model from file chosen by user
-    private void loadModel () {
+    public void loadModel () {
         Factory factory = new Factory(this);
         int response = INPUT_CHOOSER.showOpenDialog(null);
         if (response == JFileChooser.APPROVE_OPTION) {
             factory.loadModel(mySimulation, INPUT_CHOOSER.getSelectedFile());
         }
     }
-    
+
 }

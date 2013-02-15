@@ -1,6 +1,5 @@
 package util;
 
-
 /**
  * This class represents text that is a labeled numeric value.
  * 
@@ -10,7 +9,6 @@ public class ValueText extends Text {
     private String myLabel;
     private int myValue;
     private int myInitialValue;
-
 
     /**
      * Create with its label and an initial value.

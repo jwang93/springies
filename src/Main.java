@@ -1,7 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JFrame;
-
 import simulation.Keywords;
 import view.Canvas;
 
@@ -13,9 +12,9 @@ import view.Canvas;
  */
 public class Main {
     // constants
-    public static final Dimension SIZE = new Dimension(Keywords.CANVAS_WIDTH, Keywords.CANVAS_HEIGHT);
+    public static final Dimension SIZE = new Dimension(Keywords.CANVAS_WIDTH,
+                                                       Keywords.CANVAS_HEIGHT);
     public static final String TITLE = "Springies!";
-
 
     private Main () {
         // does not make sense to construct this class

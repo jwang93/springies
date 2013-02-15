@@ -4,7 +4,7 @@ import java.awt.geom.Point2D;
 
 
 /**
- * This class represents a Location (in pixels) on the screen and 
+ * This class represents a Location (in pixels) on the screen and
  * adds some utility functions to the Point2D class.
  * 
  * Note, this might be overkill, it was just annoying that Point2D
@@ -15,7 +15,6 @@ import java.awt.geom.Point2D;
 public class Location extends Point2D.Double {
     // default serialization ID
     private static final long serialVersionUID = 1L;
-
 
     /**
      * Create a location at the origin.
@@ -61,6 +60,5 @@ public class Location extends Point2D.Double {
     public Vector difference (Point2D other) {
         return new Vector(this, other);
     }
-    
-    
+
 }

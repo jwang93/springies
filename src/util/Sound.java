@@ -5,7 +5,7 @@ import java.applet.AudioClip;
 
 
 /**
- * This class handles playing sounds and 
+ * This class handles playing sounds and
  * adds some utility functions to the AudioClip class.
  * 
  * Note, Java only supports the formats: wav, aiff, au, mid, rmf.
@@ -17,7 +17,6 @@ public class Sound {
     private static final String RESOURCE_LOCATION = "/sounds/";
     // underlying implementation
     private AudioClip myClip;
-
 
     /**
      * Construct a sound with the data referred to by the given filename.
