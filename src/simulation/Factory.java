@@ -5,23 +5,18 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import view.Canvas;
 
 
 /**
  * XXX
  * 
- * @author Robert C. Duvall
+ * @author Robert C. Duvall, Jay Wang, Jimmy Wei
  */
 public class Factory {
 
     // mass IDs
     private Map<Integer, Mass> myMasses = new HashMap<Integer, Mass>();
-    private Canvas canvas;
 
-    public Factory (Canvas canvas) {
-        this.canvas = canvas;
-    }
 
     /**
      * XXX.

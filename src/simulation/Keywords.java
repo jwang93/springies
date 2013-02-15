@@ -9,11 +9,9 @@ public class Keywords {
     public static final String VISCOSITY_KEYWORD = "viscosity";
     public static final String CENTER_OF_MASS_KEYWORD = "centermass";
     public static final String WALL_KEYWORD = "wall";
-
     public static final String SPRING_KEYWORD = "spring";
     public static final String MUSCLE_KEYWORD = "muscle";
     public static final String MASS_KEYWORD = "mass";
-
     public static final String MAGNITUDE = "magnitude";
     public static final String DIRECTION = "direction";
     public static final String SCALE = "scale";
@@ -25,7 +23,6 @@ public class Keywords {
     public static final int ZERO = 0;
     public static final int ONE = 1;
     public static final int DEGREES_TURN_AROUND = 180;
-
     public static final int TOGGLE_GRAVITY = KeyEvent.VK_G;
     public static final int TOGGLE_VISCOSITY = KeyEvent.VK_V;
     public static final int TOGGLE_CENTER_OF_MASS = KeyEvent.VK_M;
@@ -38,7 +35,6 @@ public class Keywords {
     public static final int ASSEMBLY_CLEAR = KeyEvent.VK_C;
     public static final int ASSEMBLY_LOAD = KeyEvent.VK_N;
     public static final int ASCII_VALUE_ZERO = 48;
-
     public static final int WALL_ID_TOP = 1;
     public static final int WALL_ID_RIGHT = 2;
     public static final int WALL_ID_BOTTOM = 3;

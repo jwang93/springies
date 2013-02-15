@@ -9,9 +9,7 @@ import util.Vector;
 
 
 /**
- * XXX.
- * 
- * @author Robert C. Duvall
+ * @author Jay Wang, James Wei, Robert Duvall
  */
 public class Spring extends Sprite implements SimulationObject {
     // reasonable default values
@@ -44,7 +42,7 @@ public class Spring extends Sprite implements SimulationObject {
     // pen.setColor(getColor(myStart.distance(myEnd) - myLength));
     // pen.drawLine((int)myStart.getX(), (int)myStart.getY(), (int)myEnd.getX(), (int)myEnd.getY());
     // }
-
+    
     /**
      * XXX.
      */

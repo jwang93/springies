@@ -190,7 +190,6 @@ public class Canvas extends JComponent {
         addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseDragged (MouseEvent e) {
-                System.out.println(e.getPoint());
                 myLastMousePosition = e.getPoint();
             }
         });
@@ -211,7 +210,7 @@ public class Canvas extends JComponent {
 
     // load model from file chosen by user
     public void loadModel () {
-        Factory factory = new Factory(this);
+        Factory factory = new Factory();
         int response = INPUT_CHOOSER.showOpenDialog(null);
         if (response == JFileChooser.APPROVE_OPTION) {
             factory.loadModel(mySimulation, INPUT_CHOOSER.getSelectedFile());

@@ -14,16 +14,11 @@ public class InvisibleMass extends Mass {
 
     public InvisibleMass (double x, double y, double mass, Model model) {
         super(x, y, mass, model);
-        // TODO Auto-generated constructor stub
-    }
-
-    private void paint () {
-        // do nothing
     }
 
     @Override
     public void update (double elapsedTime, Dimension bounds) {
-
+        // do nothing because nothing affects me
     }
 
     @Override
@@ -32,13 +27,11 @@ public class InvisibleMass extends Mass {
     }
 
     public void changeLocation (Point lastMousePosition) {
-        // TODO Auto-generated method stub
         if (lastMousePosition != null) {
             Location newLocation = new Location(lastMousePosition);
             if (newLocation != null) {
                 this.setCenter(newLocation);
             }
         }
-
     }
 }

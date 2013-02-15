@@ -10,8 +10,6 @@ import view.Canvas;
 
 
 /**
- * XXX.
- * 
  * @author Robert C. Duvall, Jay Wang, James Wei
  */
 public class Model {
@@ -274,9 +272,4 @@ public class Model {
         return h > Keywords.MIN_BOUNDS_HEIGHT && w > Keywords.MIN_BOUNDS_WIDTH;
     }
 
-    // private void printBounds() {
-    // System.out.println("Bounds: Height: " + adjustableBounds.getHeight() + " Width: " +
-    // adjustableBounds.getWidth());
-    // System.out.println();
-    // }
 }
