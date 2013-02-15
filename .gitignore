@@ -6,3 +6,5 @@ bin/data/*.xsp
 *.class
 *.wav
 *.gif
+.project
+.checkstyle

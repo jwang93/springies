@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-
 import view.Canvas;
 
 
@@ -19,16 +18,16 @@ public class Factory {
     // mass IDs
     private Map<Integer, Mass> myMasses = new HashMap<Integer, Mass>();
     private Canvas canvas;
-    
+
     public Factory (Canvas canvas) {
-    	this.canvas = canvas;
+        this.canvas = canvas;
     }
-    
+
     /**
      * XXX.
      */
     public void loadModel (Model model, File modelFile) {
-    	model.setEnvironment(loadEnvironment());
+        model.setEnvironment(loadEnvironment());
         try {
             Scanner input = new Scanner(modelFile);
             while (input.hasNext()) {
@@ -42,7 +41,7 @@ public class Factory {
                         model.add(springCommand(line));
                     }
                     else if (Keywords.MUSCLE_KEYWORD.equals(type)) {
-                    	model.add(muscleCommand(line));
+                        model.add(muscleCommand(line));
                     }
 
                 }
@@ -52,11 +51,11 @@ public class Factory {
         catch (FileNotFoundException e) {
             // should not happen because File came from user selection
             e.printStackTrace();
-        }        
+        }
     }
-    
+
     // create the environment from formatted data
-    private Environment loadEnvironment() {
+    private Environment loadEnvironment () {
         return new Environment();
     }
 
@@ -65,19 +64,19 @@ public class Factory {
         int id = line.nextInt();
         double x = line.nextDouble();
         double y = line.nextDouble();
-        
+
         double mass = line.nextDouble();
-        
+
         Mass result = null;
-        
+
         if (mass < 0.0) {
-        	result = new FixedMass(x, y, mass, model);
-            myMasses.put(id,  result);
+            result = new FixedMass(x, y, mass, model);
+            myMasses.put(id, result);
         }
-        
+
         else {
-        	result = new Mass(x, y, mass, model);
-            myMasses.put(id,  result);
+            result = new Mass(x, y, mass, model);
+            myMasses.put(id, result);
         }
         return result;
     }
@@ -90,7 +89,7 @@ public class Factory {
         double ks = line.nextDouble();
         return new Spring(m1, m2, restLength, ks);
     }
-    
+
     // create muscle from formatted data
     private Muscle muscleCommand (Scanner line) {
         Mass m1 = myMasses.get(line.nextInt());
@@ -100,5 +99,5 @@ public class Factory {
         double amp = line.nextDouble();
         return new Muscle(m1, m2, restLength, ks, amp);
     }
-    
+
 }

@@ -10,14 +10,14 @@ import java.awt.geom.Point2D;
  * This class represents a shape that moves on its own.
  * 
  * Note, Sprite is a technical term:
- *   http://en.wikipedia.org/wiki/Sprite_(computer_graphics)
- *   
+ * http://en.wikipedia.org/wiki/Sprite_(computer_graphics)
+ * 
  * @author Robert C. Duvall
  */
 public abstract class Sprite {
     // canonical directions for a collision
     public static final int RIGHT_DIRECTION = 0;
-    public static final int DOWN_DIRECTION =  90;
+    public static final int DOWN_DIRECTION = 90;
     public static final int LEFT_DIRECTION = 180;
     public static final int UP_DIRECTION = 270;
 
@@ -33,7 +33,6 @@ public abstract class Sprite {
     private Pixmap myOriginalView;
     // cached for efficiency
     private Rectangle myBounds;
-    
 
     /**
      * Create a shape at the given position, with the given size.
@@ -140,7 +139,7 @@ public abstract class Sprite {
     }
 
     /**
-     * Returns shape's height  in pixels.
+     * Returns shape's height in pixels.
      */
     public double getHeight () {
         return mySize.getHeight();
@@ -242,7 +241,7 @@ public abstract class Sprite {
      * Returns rectangle that encloses this shape.
      */
     protected void resetBounds () {
-        myBounds = new Rectangle((int)getLeft(), (int)getTop(), mySize.width, mySize.height);
+        myBounds = new Rectangle((int) getLeft(), (int) getTop(), mySize.width, mySize.height);
     }
 
     /**
@@ -250,21 +249,17 @@ public abstract class Sprite {
      * NaN if no hit took place.
      */
     protected double getHitDirection (Rectangle bounds) {
-        // double angle = Vector.angleBetween(myCenter, new Location(bounds.getCenterX(), bounds.getCenterY()));
+        // double angle = Vector.angleBetween(myCenter, new Location(bounds.getCenterX(),
+        // bounds.getCenterY()));
         // BUGBUG: FIX ME --- this is very imperfect, but sort of works for now
-        if (bounds.contains(new Location(getLeft(), getY()))) {
+        if (bounds.contains(new Location(getLeft(), getY())))
             return RIGHT_DIRECTION;
-        }
-        else if (bounds.contains(new Location(getX(), getBottom()))) {
+        else if (bounds.contains(new Location(getX(), getBottom())))
             return UP_DIRECTION;
-        }
-        else if (bounds.contains(new Location(getRight(), getY()))) {
+        else if (bounds.contains(new Location(getRight(), getY())))
             return LEFT_DIRECTION;
-        }
-        else if (bounds.contains(new Location(getX(), getTop()))) {
-            return DOWN_DIRECTION;
-        }
+        else if (bounds.contains(new Location(getX(), getTop()))) return DOWN_DIRECTION;
         return 0;
-        //return Double.NaN;
+        // return Double.NaN;
     }
 }

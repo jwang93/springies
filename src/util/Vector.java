@@ -16,7 +16,6 @@ public class Vector {
     // "speed" in pixels per second
     private double myMagnitude;
 
-
     /**
      * Create a zero vector, i.e., with no magnitude.
      */
@@ -39,8 +38,8 @@ public class Vector {
      * FIXED THE BUG MENTIONED IN PIAZZA - https://piazza.com/class#spring2013/compsci308001sp13/81
      */
     public Vector (Point2D source, Point2D target) {
-    	double dx = target.getX() - source.getX();
-    	double dy = target.getY() - source.getY();
+        double dx = target.getX() - source.getX();
+        double dy = target.getY() - source.getY();
         setDirection(angleBetween(dx, dy));
         setMagnitude(distanceBetween(dx, dy));
     }
@@ -66,9 +65,9 @@ public class Vector {
     public double getMagnitude () {
         return myMagnitude;
     }
-    
-    public double getAngle() {
-    	return myAngle;
+
+    public double getAngle () {
+        return myAngle;
     }
 
     /**
@@ -99,13 +98,13 @@ public class Vector {
     public void setMagnitude (double value) {
         myMagnitude = value;
     }
-    
+
     /**
-     * @author - Jay Wang 
-     * Wrote this function so I could set the angle of a vector
+     * @author - Jay Wang
+     *         Wrote this function so I could set the angle of a vector
      */
     public void setAngle (double angle) {
-    	myAngle = angle;
+        myAngle = angle;
     }
 
     /**
@@ -134,7 +133,6 @@ public class Vector {
         setDirection((getDirection() + change) % 360);
     }
 
-    
     /**
      * Sets this vector's direction to the given value.
      */
@@ -211,8 +209,8 @@ public class Vector {
     public boolean equals (Object vector) {
         try {
             Vector other = (Vector) vector;
-            return (fuzzyEquals(getMagnitude(), other.getMagnitude()) && 
-                    fuzzyEquals(getDirection(), other.getDirection()));
+            return (fuzzyEquals(getMagnitude(), other.getMagnitude()) && fuzzyEquals(getDirection(),
+                                                                                     other.getDirection()));
         }
         catch (ClassCastException e) {
             return false;
@@ -248,7 +246,6 @@ public class Vector {
         return angleBetween(p1.getX() - p2.getX(), p1.getY() - p2.getY());
     }
 
-    
     /**
      * Returns the angle represented by the given dx and dy
      * 
@@ -270,11 +267,8 @@ public class Vector {
         // value based on this table:
         // http://en.wikipedia.org/wiki/Machine_epsilon#Values_for_standard_hardware_floating_point_arithmetics
         final double EPSILON = 5.96e-08;
-        if (Double.isNaN(a) && Double.isNaN(b) || Double.isInfinite(a) && Double.isInfinite(b)) {
+        if (Double.isNaN(a) && Double.isNaN(b) || Double.isInfinite(a) && Double.isInfinite(b))
             return true;
-        }
-        else {
-            return Math.abs(a / b - 1) < EPSILON;
-        }
+        else return Math.abs(a / b - 1) < EPSILON;
     }
 }
