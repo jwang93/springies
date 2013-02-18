@@ -1,8 +1,9 @@
-
 README for Springies:
 
 TEAM: Jay Wang, James Wei 
 TA: Alex Bruce 
+
+The final code is on the Master Branch. 
 
 Notes to Alex: 
 
